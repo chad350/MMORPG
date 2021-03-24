@@ -7,14 +7,75 @@ public class PlayerController : MonoBehaviour
 {
     public Grid _grid;
     private float _speed = 5.0f;
-    
+
     private Vector3Int _cellPos = Vector3Int.zero;
-    private MoveDir _dir = MoveDir.None;
     private bool _isMoving = false;
+
+    private Animator _animator;
     
+    private MoveDir _dir = MoveDir.Down;
+    public MoveDir Dir
+    {
+        get { return _dir;}
+        set
+        {
+            if(_dir == value)
+                return;
+
+            switch (value)
+            {
+                case MoveDir.Up:
+                    _animator.Play("walk_back");
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    break;
+                
+                case MoveDir.Down:
+                    _animator.Play("walk_front");
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    break;
+                
+                case MoveDir.Left:
+                    _animator.Play("walk_right");
+                    transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+                    break;
+                
+                case MoveDir.Right:
+                    _animator.Play("walk_right");
+                    transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    break;
+                
+                case MoveDir.None:
+                    if (_dir == MoveDir.Up)
+                    {
+                        _animator.Play("idle_back");
+                        transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    }
+                    else if (_dir == MoveDir.Down)
+                    {
+                        _animator.Play("idle_front");
+                        transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    }
+                    else if (_dir == MoveDir.Left)
+                    {
+                        _animator.Play("idle_left");
+                        transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+                    }
+                    else
+                    {
+                        _animator.Play("idle_right");
+                        transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+                    }
+                    break;
+            }
+
+            _dir = value;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        _animator = GetComponent<Animator>();
         Vector3 pos = _grid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f);
         transform.position = pos;
     }
@@ -32,23 +93,23 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
-            _dir = MoveDir.Up;
+            Dir = MoveDir.Up;
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            _dir = MoveDir.Down;
+            Dir = MoveDir.Down;
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            _dir = MoveDir.Left;
+            Dir = MoveDir.Left;
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            _dir = MoveDir.Right;
+            Dir = MoveDir.Right;
         }
         else
         {
-            _dir = MoveDir.None;
+            Dir = MoveDir.None;
         }    
     }
 

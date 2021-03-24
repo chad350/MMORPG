@@ -1,11 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
 public class PlayerController : MonoBehaviour
 {
-    public Grid _grid;
     private float _speed = 5.0f;
 
     private Vector3Int _cellPos = Vector3Int.zero;
@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (_dir == MoveDir.Left)
                     {
-                        _animator.Play("idle_left");
+                        _animator.Play("idle_right");
                         transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
                     }
                     else
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _animator = GetComponent<Animator>();
-        Vector3 pos = _grid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f);
+        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f);
         transform.position = pos;
     }
 
@@ -88,7 +88,12 @@ public class PlayerController : MonoBehaviour
         UpdateIsMoving();
         
     }
-    
+
+    private void LateUpdate()
+    {
+        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
+    }
+
     void GetDirInput()
     {
         if (Input.GetKey(KeyCode.W))
@@ -115,29 +120,32 @@ public class PlayerController : MonoBehaviour
 
     void UpdateIsMoving()
     {
-        if (_isMoving == false)
+        if (_isMoving == false && _dir != MoveDir.None)
         {
+            Vector3Int destPos = _cellPos; 
             switch (_dir)
             {
                 case MoveDir.Up:
-                    _cellPos += Vector3Int.up;
-                    _isMoving = true;
+                    destPos += Vector3Int.up;
                     break;
             
                 case MoveDir.Down:
-                    _cellPos += Vector3Int.down;
-                    _isMoving = true;
+                    destPos += Vector3Int.down;
                     break;
             
                 case MoveDir.Left:
-                    _cellPos += Vector3Int.left;
-                    _isMoving = true;
+                    destPos += Vector3Int.left;
                     break;
             
                 case MoveDir.Right:
-                    _cellPos += Vector3Int.right;
-                    _isMoving = true;
+                    destPos += Vector3Int.right;
                     break;
+            }
+
+            if (Managers.Map.CanGo(destPos))
+            {
+                _cellPos = destPos;
+                _isMoving = true;
             }
         }
     }
@@ -147,7 +155,7 @@ public class PlayerController : MonoBehaviour
         if(_isMoving == false)
             return;
         
-        Vector3 dest = _grid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f) ;
+        Vector3 dest = Managers.Map.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f) ;
         Vector3 moveDir = dest - transform.position;
         
         // 방향 벡터는 2가지의 크기를가지고 있다.

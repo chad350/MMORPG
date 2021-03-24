@@ -15,6 +15,13 @@ public class Managers : MonoBehaviour
 	{
 		get { return Instance._map; }
 	}
+	
+	private ObjectManager _obj = new ObjectManager();
+
+	public static ObjectManager Obj
+	{
+		get { return Instance._obj; }
+	}
 
 	#endregion
 

@@ -7,7 +7,7 @@ public class CreatureController : MonoBehaviour
 {
     public float _speed = 5.0f;
 
-    protected Vector3Int _cellPos = Vector3Int.zero;
+    public Vector3Int CellPos { get; set; } = Vector3Int.zero;
     protected Animator _animator;
     protected SpriteRenderer _sprite;
     
@@ -122,7 +122,7 @@ public class CreatureController : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
         _sprite = GetComponent<SpriteRenderer>();
-        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f);
+        Vector3 pos = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f);
         transform.position = pos;
     }
 
@@ -137,7 +137,7 @@ public class CreatureController : MonoBehaviour
     {
         if (State == CreatureState.Idle && _dir != MoveDir.None)
         {
-            Vector3Int destPos = _cellPos; 
+            Vector3Int destPos = CellPos; 
             switch (_dir)
             {
                 case MoveDir.Up:
@@ -157,10 +157,13 @@ public class CreatureController : MonoBehaviour
                     break;
             }
 
+            State = CreatureState.Moving;
             if (Managers.Map.CanGo(destPos))
             {
-                _cellPos = destPos;
-                State = CreatureState.Moving;
+                if (Managers.Obj.Find(destPos) == null)
+                {
+                    CellPos = destPos;
+                }
             }
         }
     }
@@ -170,7 +173,7 @@ public class CreatureController : MonoBehaviour
         if(State != CreatureState.Moving)
             return;
         
-        Vector3 dest = Managers.Map.CurrentGrid.CellToWorld(_cellPos) + new Vector3(0.5f, 0.5f) ;
+        Vector3 dest = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f) ;
         Vector3 moveDir = dest - transform.position;
         
         // 방향 벡터는 2가지의 크기를가지고 있다.

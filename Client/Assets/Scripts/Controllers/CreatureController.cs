@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using static Define;
+
 public class CreatureController : MonoBehaviour
 {
     public float _speed = 5.0f;
@@ -11,7 +12,7 @@ public class CreatureController : MonoBehaviour
     protected Animator _animator;
     protected SpriteRenderer _sprite;
     
-    private CreatureState _state = CreatureState.Idle;
+    protected CreatureState _state = CreatureState.Idle;
 
     public CreatureState State
     {
@@ -26,8 +27,8 @@ public class CreatureController : MonoBehaviour
         }
     }
 
-    private MoveDir _lastDir = MoveDir.Down;
-    private MoveDir _dir = MoveDir.Down;
+    protected MoveDir _lastDir = MoveDir.Down;
+    protected MoveDir _dir = MoveDir.Down;
     public MoveDir Dir
     {
         get { return _dir;}
@@ -42,6 +43,28 @@ public class CreatureController : MonoBehaviour
 
             UpdateAnimation();
         }
+    }
+
+    public Vector3Int GetFrontCellPos()
+    {
+        Vector3Int cellPos = CellPos;
+        switch (_lastDir)
+        {
+            case MoveDir.Up:
+                cellPos += Vector3Int.up;
+                break;
+            case MoveDir.Down:
+                cellPos += Vector3Int.down;
+                break;
+            case MoveDir.Left:
+                cellPos += Vector3Int.left;
+                break;
+            case MoveDir.Right:
+                cellPos += Vector3Int.right;
+                break;
+        }
+
+        return cellPos;
     }
 
     protected virtual void UpdateAnimation()
@@ -99,6 +122,28 @@ public class CreatureController : MonoBehaviour
         }
         else if (_state == CreatureState.Skill)
         {
+            switch (_lastDir)
+            {
+                case MoveDir.Up:
+                    _animator.Play("attack_back");
+                    _sprite.flipX = false;
+                    break;
+                
+                case MoveDir.Down:
+                    _animator.Play("attack_front");
+                    _sprite.flipX = false;
+                    break;
+                
+                case MoveDir.Left:
+                    _animator.Play("attack_right");
+                    _sprite.flipX = true;
+                    break;
+                
+                case MoveDir.Right:
+                    _animator.Play("attack_right");
+                    _sprite.flipX = false;
+                    break;
+            }
         }
         else
         {
@@ -128,14 +173,25 @@ public class CreatureController : MonoBehaviour
 
     protected virtual void UpdateController()
     {
-        UpdatePosition();
-        UpdateIsMoving();
+        switch (State)
+        {
+            case CreatureState.Idle:
+                UpdateIdle();
+                break;
+            case CreatureState.Moving:
+                UpdateMoving();
+                break;
+            case CreatureState.Skill:
+                break;
+            case CreatureState.Dead:
+                break;
+        }
     }
 
 
-    void UpdateIsMoving()
+    protected virtual void UpdateIdle()
     {
-        if (State == CreatureState.Idle && _dir != MoveDir.None)
+        if (_dir != MoveDir.None)
         {
             Vector3Int destPos = CellPos; 
             switch (_dir)
@@ -168,11 +224,8 @@ public class CreatureController : MonoBehaviour
         }
     }
     
-    void UpdatePosition()
+    protected virtual void UpdateMoving()
     {
-        if(State != CreatureState.Moving)
-            return;
-        
         Vector3 dest = Managers.Map.CurrentGrid.CellToWorld(CellPos) + new Vector3(0.5f, 0.5f) ;
         Vector3 moveDir = dest - transform.position;
         
@@ -197,6 +250,16 @@ public class CreatureController : MonoBehaviour
             transform.position += moveDir.normalized * _speed * Time.deltaTime;
             State = CreatureState.Moving;
         }
+        
+    }
+
+    protected virtual void UpdateSkill()
+    {
+        
+    }
+
+    protected virtual void UpdateDead()
+    {
         
     }
 }

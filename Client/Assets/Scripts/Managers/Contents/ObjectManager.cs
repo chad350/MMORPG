@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,6 +33,17 @@ public class ObjectManager
         return null;
     }
 
+    public GameObject Find(Func<GameObject, bool> condition)
+    {
+        foreach (var obj in _object)
+        {
+            if (condition.Invoke(obj))
+                return obj;
+        }
+
+        return null;
+    }
+    
     public void Clear()
     {
         _object.Clear();

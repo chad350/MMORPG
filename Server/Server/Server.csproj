@@ -9,4 +9,13 @@
     <ProjectReference Include="..\ServerCore\ServerCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Packet\PacketHandler.cs" />
+    <Compile Remove="Packet\ServerPacketManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Packet" />
+  </ItemGroup>
+
 </Project>

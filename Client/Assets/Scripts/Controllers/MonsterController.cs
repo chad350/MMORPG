@@ -5,6 +5,7 @@ using static Define;
 
 public class MonsterController : CreatureController
 {
+    private Coroutine _coSkill;
     private Coroutine _coPatrol;
     private Coroutine _coSearch;
 
@@ -13,7 +14,12 @@ public class MonsterController : CreatureController
     
     private GameObject _target;
 
-    private float _searchRange = 5.0f;
+    private float _searchRange = 10.0f;
+    
+    private float _skillRange = 1.0f;
+
+    
+    private bool _rangedSkill = false;
     
     public override CreatureState State
     {
@@ -44,6 +50,14 @@ public class MonsterController : CreatureController
         base.Init();
         State = CreatureState.Idle;
         Dir = MoveDir.None;
+
+        _rangedSkill = Random.Range(0, 2) == 0;
+        
+        if (_rangedSkill)
+            _skillRange = 10.0f;
+        else
+            _skillRange = 1.0f;
+        
     }
 
     protected override void UpdateIdle()
@@ -67,33 +81,37 @@ public class MonsterController : CreatureController
         if (_target != null)
         {
             destPos = _target.GetComponent<CreatureController>().CellPos;
+
+            Vector3Int dir = destPos - CellPos;
+            if (dir.magnitude <= _skillRange && (dir.x == 0 || dir.y == 0))
+            {
+                Dir = GetDirFromVector(dir);
+                State = CreatureState.Skill;
+                
+                if(_rangedSkill)
+                    _coSkill = StartCoroutine("CoStartShootArrow");
+                else
+                    _coSkill = StartCoroutine("CoStartPunch");
+                return;
+            }
         }
 
         List<Vector3Int> path = Managers.Map.FindPath(CellPos, destPos,  true);
         // 길을 못찾은 경우, 타겟이 있는 경유, 경로가 너무 먼 경우
-        if (path.Count < 2 || (_target != null && path.Count > 10)) 
+        if (path.Count < 2 || (_target != null && path.Count > 20)) 
         {
             _target = null;
             State = CreatureState.Idle;
             return;
         }
         
+        // 길찾기
         // 0 은 현재 자기가 있는 위치
         Vector3Int nextPos = path[1];
-        // 길찾기
-        Vector3Int moveCellDir = nextPos - CellPos;
-        if (moveCellDir.x > 0)
-            Dir = MoveDir.Right;
-        else if (moveCellDir.x < 0)
-            Dir = MoveDir.Left;
-        else if (moveCellDir.y > 0)
-            Dir = MoveDir.Up;
-        else if (moveCellDir.y < 0)
-            Dir = MoveDir.Down;
-        else
-            Dir = MoveDir.None;
+        Vector3Int moveCellDir = nextPos - CellPos; 
         
-        
+        Dir = GetDirFromVector(moveCellDir);
+
         if (Managers.Map.CanGo(nextPos) && Managers.Obj.Find(nextPos) == null)
         {
             CellPos = nextPos;
@@ -171,5 +189,35 @@ public class MonsterController : CreatureController
                 return true;
             });
         }
+    }
+    
+    IEnumerator CoStartPunch()
+    {
+        // 피격판정
+        GameObject go = Managers.Obj.Find(GetFrontCellPos());
+        if (go != null)
+        {
+            CreatureController cc = go.GetComponent<CreatureController>();
+            if(cc != null)
+                cc.OnDamaged();
+        }
+
+        // 대기
+        yield return new WaitForSeconds(0.5f);
+        State = CreatureState.Idle;
+        _coSkill = null;
+    }
+
+    IEnumerator CoStartShootArrow()
+    {
+        GameObject go = Managers.Resource.Instantiate("Creature/Arrow");
+        ArrowController ac = go.GetComponent<ArrowController>();
+        ac.Dir = _lastDir;
+        ac.CellPos = CellPos;
+        
+        // 대기
+        yield return new WaitForSeconds(0.3f);
+        State = CreatureState.Idle;
+        _coSkill = null;
     }
 }

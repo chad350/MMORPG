@@ -5,14 +5,12 @@ using static Define;
 
 public class MonsterController : CreatureController
 {
-    [SerializeField]
     private Coroutine _coPatrol;
-    [SerializeField]
     private Coroutine _coSearch;
-    [SerializeField]
+
     private Vector3Int _destCellPos;
 
-    [SerializeField]
+    
     private GameObject _target;
 
     private float _searchRange = 5.0f;
@@ -46,8 +44,6 @@ public class MonsterController : CreatureController
         base.Init();
         State = CreatureState.Idle;
         Dir = MoveDir.None;
-
-        _speed = 3;
     }
 
     protected override void UpdateIdle()

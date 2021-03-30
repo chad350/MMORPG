@@ -23,6 +23,13 @@ public class Managers : MonoBehaviour
 		get { return Instance._obj; }
 	}
 
+	private NetworkManager _network = new NetworkManager();
+
+	public static NetworkManager Network
+	{
+		get { return Instance._network; }
+	}
+	
 	#endregion
 
 	#region Core
@@ -48,7 +55,7 @@ public class Managers : MonoBehaviour
 
     void Update()
     {
-
+	    _network.Update();
     }
 
     static void Init()
@@ -65,6 +72,7 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(go);
             s_instance = go.GetComponent<Managers>();
 
+            s_instance._network.Init();
             s_instance._data.Init();
             s_instance._pool.Init();
             s_instance._sound.Init();

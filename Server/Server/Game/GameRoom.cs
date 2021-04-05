@@ -79,6 +79,29 @@ namespace Server.Game
             }
         }
 
+        public void HandleMove(Player player, C_Move movePacket)
+        {
+            if (player == null)
+                return;
+
+            lock (_lock)
+            {
+                // 검증 단계 - 클라는 거짓말을 하기 때문
+            
+            
+                // 서버에서 좌표 이동
+                PlayerInfo info = player.info;
+                info.PosInfo = movePacket.PosInfo;
+		
+                // 다른 플레이어에게 브로드캐스트
+                S_Move resMovePacket = new S_Move();
+                resMovePacket.PlayerId = player.info.PlayerId;
+                resMovePacket.PosInfo = movePacket.PosInfo;
+		
+                Broadcast(resMovePacket);   
+            }
+        }
+
         public void Broadcast(IMessage packet)
         {
             lock (_lock)

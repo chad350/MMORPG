@@ -102,6 +102,33 @@ namespace Server.Game
             }
         }
 
+        public void HandleSkill(Player player, C_Skill skillPacket)
+        {
+            if (player == null)
+                return;
+
+            lock (_lock)
+            {
+                PlayerInfo info = player.info;
+                // 스킬을 쓸수 있는 상태인지 체크 - 클라는 믿을수 없다.
+                if(info.PosInfo.State != CreatureState.Idle)
+                    return;
+                
+                // 스킬 사용 가능 여부 체크
+                
+                // 통과
+                info.PosInfo.State = CreatureState.Skill;
+
+                S_Skill skill = new S_Skill() {Info = new SkillInfo()};
+                skill.PlayerId = info.PlayerId;
+                skill.Info.SkillId = 1; // 지금은 1번만 나중에 추가
+                Broadcast(skill);
+                
+                // 데미지 판정
+            }
+        }
+        
+
         public void Broadcast(IMessage packet)
         {
             lock (_lock)

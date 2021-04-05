@@ -40,8 +40,11 @@ namespace Server
 			// 해당 패킷을 받은다음 입장해야한다.
 			MyPlayer = PlayerManager.Instance.Add();
 			MyPlayer.info.Name = $"Player_{MyPlayer.info.PlayerId}";
-			MyPlayer.info.PoxX = 0;
-			MyPlayer.info.PoxY = 0;
+			MyPlayer.info.PosInfo.State = CreatureState.Idle;
+			MyPlayer.info.PosInfo.MoveDir = MoveDir.None;
+			MyPlayer.info.PosInfo.PoxX = 0;
+			MyPlayer.info.PosInfo.PoxY = 0;
+				
 			MyPlayer.Session = this;
 			
 			RoomManager.Instance.Find(1).EnterGame(MyPlayer);
@@ -49,7 +52,7 @@ namespace Server
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
 		{
-			//PacketManager.Instance.OnRecvPacket(this, buffer);
+			PacketManager.Instance.OnRecvPacket(this, buffer);
 		}
 
 		public override void OnDisconnected(EndPoint endPoint)

@@ -1,26 +1,63 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Google.Protobuf.Protocol;
 using UnityEngine;
 
 public class ObjectManager
 {
-    // Start is called before the first frame update
-    List<GameObject> _object = new List<GameObject>();
+    public MyPlayerController MyPlayer { get; set; }
+    
+    Dictionary<int, GameObject> _objects = new Dictionary<int, GameObject>();
 
-    public void Add(GameObject go)
+    public void Add(PlayerInfo info, bool isMyPlayer =false)
     {
-        _object.Add(go);
+        if (isMyPlayer == true)
+        {
+            GameObject go = Managers.Resource.Instantiate("Creature/MyPlayer");
+            go.name = info.Name;
+            _objects.Add(info.PlayerId, go);
+
+            MyPlayer = go.GetComponent<MyPlayerController>();
+            MyPlayer.Id = info.PlayerId;
+            MyPlayer.CellPos = new Vector3Int(info.PoxX, info.PoxY, 0);
+        }
+        else
+        {
+            GameObject go = Managers.Resource.Instantiate("Creature/Player");
+            go.name = info.Name;
+            _objects.Add(info.PlayerId, go);
+
+            PlayerController pc = go.GetComponent<PlayerController>();
+            pc.Id = info.PlayerId;
+            pc.CellPos = new Vector3Int(info.PoxX, info.PoxY, 0);
+        }
+
+        
+    }
+
+    public void Add(int id, GameObject go)
+    {
+        _objects.Add(id, go);
     }
     
-    public void Remove(GameObject go)
+    public void Remove(int id)
     {
-        _object.Remove(go);
+        _objects.Remove(id);
+    }
+
+    public void RemoveMyPlayer()
+    {
+        if(MyPlayer == null)
+            return;
+        
+        Remove(MyPlayer.Id);
+        MyPlayer = null;
     }
 
     public GameObject Find(Vector3Int cellPos)
     {
-        foreach (var obj in _object)
+        foreach (var obj in _objects.Values)
         {
             CreatureController cc = obj.GetComponent<CreatureController>();
             if(cc == null)
@@ -35,7 +72,7 @@ public class ObjectManager
 
     public GameObject Find(Func<GameObject, bool> condition)
     {
-        foreach (var obj in _object)
+        foreach (var obj in _objects.Values)
         {
             if (condition.Invoke(obj))
                 return obj;
@@ -46,6 +83,6 @@ public class ObjectManager
     
     public void Clear()
     {
-        _object.Clear();
+        _objects.Clear();
     }
 }

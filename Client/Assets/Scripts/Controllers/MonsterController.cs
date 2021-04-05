@@ -133,7 +133,7 @@ public class MonsterController : CreatureController
         GameObject.Destroy(effect, 0.5f); // 이펙트 소멸
                     
         // 몬스터 삭제
-        Managers.Obj.Remove(gameObject);
+        Managers.Obj.Remove(Id);
         Managers.Resource.Destroy(gameObject);
     }
 

@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using static Define;
 
 public class PlayerController : CreatureController
 {
-    private Coroutine _coSkill;
-    private bool _rangeSkill = false;
+    protected Coroutine _coSkill;
+    protected bool _rangeSkill = false;
     
     protected override void Init()
     {
@@ -101,25 +100,8 @@ public class PlayerController : CreatureController
     
     protected override void UpdateController()
     {
-        switch (State)
-        {
-            case CreatureState.Idle:
-                GetDirInput();
-                UpdateIdle();
-                break;
-            case CreatureState.Moving:
-                GetDirInput();
-                break;
-        }
-        GetDirInput();
         base.UpdateController();
     }
-
-    private void LateUpdate()
-    {
-        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
-    }
-
 
     protected override void UpdateIdle()
     {
@@ -129,38 +111,6 @@ public class PlayerController : CreatureController
             State = CreatureState.Moving;
             return;
         }
-
-        // 스킬 상태로 갈지 확인
-        if (Input.GetKey(KeyCode.Space))
-        {
-            State = CreatureState.Skill;
-            //_coSkill = StartCoroutine("CoStartPunch");
-            _coSkill = StartCoroutine("CoStartShootArrow");
-        }
-    }
-
-    void GetDirInput()
-    {
-        if (Input.GetKey(KeyCode.W))
-        {
-            Dir = MoveDir.Up;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            Dir = MoveDir.Down;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            Dir = MoveDir.Left;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            Dir = MoveDir.Right;
-        }
-        else
-        {
-            Dir = MoveDir.None;
-        }    
     }
 
     IEnumerator CoStartPunch()

@@ -51,7 +51,7 @@ message S_Spawn {
 }
 
 message S_Despawn {
-  repeated int32 playerIds = 1; // 굳이 모든 데이터 다 필요 없이 아이디만 받는다. 
+  repeated int32 objectIds = 1; // 굳이 모든 데이터 다 필요 없이 아이디만 받는다. 
 }
 
 message C_Move {
@@ -59,7 +59,7 @@ message C_Move {
 }
 
 message S_Move {
-  int32 playerId = 1;
+  int32 objectId = 1;
   PositionInfo posInfo = 2;
 }
 
@@ -68,7 +68,7 @@ message C_Skill{
 }
 
 message S_Skill{
-  int32 playerId = 1;
+  int32 objectId = 1;
   SkillInfo info = 2;
 }
 

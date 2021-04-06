@@ -56,7 +56,7 @@ namespace Server.Game
 	    public int SizeY { get { return MaxY - MinY + 1; } }
 	    
 	    bool[,] _collision;
-	    Player[,] _players;
+	    GameObject[,] _objects;
 
 	    public bool CanGo(Vector2Int cellPos, bool checkObeject = true)
 	    {
@@ -69,10 +69,10 @@ namespace Server.Game
 	        int x = cellPos.x - MinX;
 	        int y = MaxY - cellPos.y;
 	        
-	        return !_collision[y, x] && (!checkObeject || _players[y, x] == null);
+	        return !_collision[y, x] && (!checkObeject || _objects[y, x] == null);
 	    }
 
-	    public Player Find(Vector2Int cellPos)
+	    public GameObject Find(Vector2Int cellPos)
 	    {
 		    if (cellPos.x < MinX || cellPos.x > MaxX)
 			    return null;
@@ -83,35 +83,59 @@ namespace Server.Game
 		    int x = cellPos.x - MinX;
 		    int y = MaxY - cellPos.y;
 		    
-		    return _players[y, x];
+		    return _objects[y, x];
 	    }
 
-	    public bool ApplyMove(Player player, Vector2Int dest)
+	    private bool CheckMapBound(GameObject gameObject)
 	    {
-		    PositionInfo posInfo = player.info.PosInfo;
-
+		    PositionInfo posInfo = gameObject.PosInfo;
+		    
 		    if (posInfo.PoxX < MinX || posInfo.PoxX > MaxX)
 			    return false;
 	        
 		    if (posInfo.PoxY < MinY || posInfo.PoxY > MaxY)
 			    return false;
+
+		    return true;
+	    }
+
+	    private void ResetObjectPosFromMap(GameObject gameObject)
+	    {
+		    PositionInfo posInfo = gameObject.PosInfo;
 		    
+		    // 플레이어 위치를 초기화
+		    int x = posInfo.PoxX - MinX;
+		    int y = MaxY - posInfo.PoxY;
+		    if (_objects[y, x] == gameObject)
+			    _objects[y, x] = null;
+	    }
+
+	    public bool ApplyLeave(GameObject gameObject)
+	    {
+		    if (CheckMapBound(gameObject) == false)
+			    return false;
+		    
+		    ResetObjectPosFromMap(gameObject);
+		    
+		    return true;
+	    }
+	    
+	    public bool ApplyMove(GameObject gameObject, Vector2Int dest)
+	    {
+		    if (CheckMapBound(gameObject) == false)
+			    return false;
+		    
+		    ResetObjectPosFromMap(gameObject);
+		    
+		    PositionInfo posInfo = gameObject.info.PosInfo;
 		    if (CanGo(dest, true) == false)
 			    return false;
-
-		    {
-			    // 플레이어 위치를 초기화
-			    int x = posInfo.PoxX - MinX;
-			    int y = MaxY - posInfo.PoxY;
-			    if(_players[y, x] == player)
-					_players[y, x] = null;
-		    }
 
 		    {
 			    // 플레이어 위치 갱신
 			    int x = dest.x - MinX;
 			    int y = MaxY - dest.y;
-			    _players[y, x] = player;
+			    _objects[y, x] = gameObject;
 		    }
 
 		    // 실제 좌표 이동
@@ -120,7 +144,7 @@ namespace Server.Game
 		    
 		    return true;
 	    }
-
+	    
 	    public void LoadMap(int mapId, string pathPrefix = "../../../../../Common/MapData")
 	    {
 		    string mapName = "Map_" + mapId.ToString("000");
@@ -139,7 +163,7 @@ namespace Server.Game
 	        int xCount = MaxX - MinX + 1;
 	        int yCount = MaxY - MinY + 1;
 	        _collision = new bool[yCount, xCount];
-	        _players = new Player[yCount, xCount];
+	        _objects = new Player[yCount, xCount];
 	        
 	        for (int y = 0; y < yCount; y++)
 	        {

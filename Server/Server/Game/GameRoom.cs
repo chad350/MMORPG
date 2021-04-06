@@ -9,7 +9,14 @@ namespace Server.Game
         private object _lock = new object();
         public int RoomId { get; set; }
 
-        private List<Player> _players = new List<Player>();
+        private Dictionary<int, Player> _players = new Dictionary<int,Player>();
+
+        private Map _map = new Map();
+
+        public void Init(int mapId)
+        {
+            _map.LoadMap(mapId);
+        }
 
         public void EnterGame(Player newPlayer)
         {
@@ -18,7 +25,7 @@ namespace Server.Game
 
             lock (_lock)
             {
-                _players.Add(newPlayer);
+                _players.Add(newPlayer.info.PlayerId, newPlayer);
                 newPlayer.Room = this;
                 
                 // 본인한테 정보 전송
@@ -28,7 +35,7 @@ namespace Server.Game
                     newPlayer.Session.Send(enterPacket);
                 
                     S_Spawn spawnPacket = new S_Spawn();
-                    foreach (Player p in _players)
+                    foreach (Player p in _players.Values)
                     {
                         if(newPlayer != p)
                             spawnPacket.Players.Add(p.info);
@@ -40,7 +47,7 @@ namespace Server.Game
                 {
                     S_Spawn spawnPacket = new S_Spawn();
                     spawnPacket.Players.Add(newPlayer.info);
-                    foreach (Player p in _players)
+                    foreach (Player p in _players.Values)
                     {
                         if(newPlayer != p)
                             p.Session.Send(spawnPacket);
@@ -53,13 +60,12 @@ namespace Server.Game
         {
             lock (_lock)
             {
-                Player player = _players.Find(p => p.info.PlayerId == playerId);
-                if(player == null)
+                Player player = null;
+                if(_players.Remove(playerId, out player) == false)
                     return;
-
-                _players.Remove(player);
-                player.Room = null;
                 
+                player.Room = null;
+
                 // 본인한테 정보 전송
                 {
                     S_LeaveGame leavePacket = new S_LeaveGame();
@@ -70,7 +76,7 @@ namespace Server.Game
                 {
                     S_Despawn despawnPacket = new S_Despawn();
                     despawnPacket.PlayerIds.Add(player.info.PlayerId);
-                    foreach (Player p in _players)
+                    foreach (Player p in _players.Values)
                     {
                         if(player != p)
                             p.Session.Send(despawnPacket);
@@ -87,12 +93,24 @@ namespace Server.Game
             lock (_lock)
             {
                 // 검증 단계 - 클라는 거짓말을 하기 때문
-            
-            
-                // 서버에서 좌표 이동
-                PlayerInfo info = player.info;
-                info.PosInfo = movePacket.PosInfo;
-		
+                PositionInfo movePosInfo = movePacket.PosInfo; // 이동 예정 정보
+                PlayerInfo info = player.info; // 실제 플레이어 정보
+
+                // 다른 좌표로 이동할 경우 갈 수 있는지 체크
+                // 지금 플레이어의 정보와 이동할 정보가 다르다면 -> 이동할 거라면
+                if (movePosInfo.PoxX != info.PosInfo.PoxX || movePosInfo.PoxY != info.PosInfo.PoxY)
+                {
+                    // 이동할 정보 (movePosInfo) 로 갈 수 있는지 체크 
+                    if(_map.CanGo(new Vector2Int(movePosInfo.PoxX, movePosInfo.PoxY)) == false)
+                        return; // 못하면 리턴
+                }
+                // 좌표가 아닌 방향등 다른 정보를 위한 패킷이었으면 통과
+
+                // 통과 됬으면 정보 업데이트
+                info.PosInfo.State = movePosInfo.State;
+                info.PosInfo.MoveDir = movePosInfo.MoveDir;
+                _map.ApplyMove(player, new Vector2Int(movePosInfo.PoxX, movePosInfo.PoxY));
+                
                 // 다른 플레이어에게 브로드캐스트
                 S_Move resMovePacket = new S_Move();
                 resMovePacket.PlayerId = player.info.PlayerId;
@@ -133,7 +151,7 @@ namespace Server.Game
         {
             lock (_lock)
             {
-                foreach (Player p in _players)
+                foreach (Player p in _players.Values)
                     p.Session.Send(packet);
             }
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
@@ -143,6 +144,13 @@ namespace Server.Game
                 Broadcast(skill);
                 
                 // 데미지 판정
+                Vector2Int skillPos = player.GetFrontCellPos(info.PosInfo.MoveDir);
+                Player target = _map.Find(skillPos);
+                
+                if (target != null)
+                {
+                    Console.WriteLine("Hit Player !");
+                }
             }
         }
         

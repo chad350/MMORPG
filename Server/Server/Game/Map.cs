@@ -72,6 +72,20 @@ namespace Server.Game
 	        return !_collision[y, x] && (!checkObeject || _players[y, x] == null);
 	    }
 
+	    public Player Find(Vector2Int cellPos)
+	    {
+		    if (cellPos.x < MinX || cellPos.x > MaxX)
+			    return null;
+	        
+		    if (cellPos.y < MinY || cellPos.y > MaxY)
+			    return null;
+		    
+		    int x = cellPos.x - MinX;
+		    int y = MaxY - cellPos.y;
+		    
+		    return _players[y, x];
+	    }
+
 	    public bool ApplyMove(Player player, Vector2Int dest)
 	    {
 		    PositionInfo posInfo = player.info.PosInfo;

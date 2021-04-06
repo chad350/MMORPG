@@ -2,23 +2,43 @@ using Google.Protobuf.Protocol;
 
 namespace Server.Game
 {
-    public class Player
+    public class GameObject
     {
-        public PlayerInfo info { get; set; } = new PlayerInfo() { PosInfo =  new PositionInfo() };
-        public GameRoom Room { get; set; }
-        public ClientSession Session { get; set; }
+        public GameObjectType ObjectType { get; protected set; } = GameObjectType.None;
 
+        public int Id
+        {
+            get { return info.ObjectId; }
+            set { info.ObjectId = value; }
+        }
+
+        public GameRoom Room { get; set; }
+
+        public ObjectInfo info { get; set; } = new ObjectInfo();
+        public PositionInfo PosInfo { get; private set; } = new PositionInfo();
+
+        
+        public GameObject()
+        {
+            info.PosInfo = PosInfo;
+        }
+        
         public Vector2Int CellPos
         {
             get
             {
-                return new Vector2Int(info.PosInfo.PoxX, info.PosInfo.PoxY);
+                return new Vector2Int(PosInfo.PoxX, PosInfo.PoxY);
             }
             set
             {
-                info.PosInfo.PoxX = value.x;
-                info.PosInfo.PoxY = value.y;
+                PosInfo.PoxX = value.x;
+                PosInfo.PoxY = value.y;
             }
+        }
+
+        public Vector2Int GetFrontCellPos()
+        {
+            return GetFrontCellPos(PosInfo.MoveDir);
         }
 
         public Vector2Int GetFrontCellPos(MoveDir dir)

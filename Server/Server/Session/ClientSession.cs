@@ -38,8 +38,8 @@ namespace Server
 			
 			// 원래는 입장준비가 끝났다고 클라이언트에서 판단 되면 패킷을 보내고
 			// 해당 패킷을 받은다음 입장해야한다.
-			MyPlayer = PlayerManager.Instance.Add();
-			MyPlayer.info.Name = $"Player_{MyPlayer.info.PlayerId}";
+			MyPlayer = ObjectManager.Instance.Add<Player>();
+			MyPlayer.info.Name = $"Player_{MyPlayer.info.ObjectId}";
 			MyPlayer.info.PosInfo.State = CreatureState.Idle;
 			MyPlayer.info.PosInfo.MoveDir = MoveDir.Down;
 			MyPlayer.info.PosInfo.PoxX = 0;
@@ -57,7 +57,7 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-			RoomManager.Instance.Find(1).LeaveGame(MyPlayer.info.PlayerId);
+			RoomManager.Instance.Find(1).LeaveGame(MyPlayer.info.ObjectId);
 			
 			SessionManager.Instance.Remove(this);
 

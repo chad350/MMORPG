@@ -49,8 +49,7 @@ public class MonsterController : CreatureController
     protected override void Init()
     {
         base.Init();
-        AddHpBar();
-        
+
         State = CreatureState.Idle;
         Dir = MoveDir.Down;
 
@@ -115,7 +114,7 @@ public class MonsterController : CreatureController
         
         Dir = GetDirFromVector(moveCellDir);
 
-        if (Managers.Map.CanGo(nextPos) && Managers.Obj.Find(nextPos) == null)
+        if (Managers.Map.CanGo(nextPos) && Managers.Obj.FindCreature(nextPos) == null)
         {
             CellPos = nextPos;
         }
@@ -147,7 +146,7 @@ public class MonsterController : CreatureController
 
             // 해당 좌표로 이동가능하고 (지형적 방해로)
             // 해당 위치에 오브젝트가 없다면 (오브젝트/몬스터)
-            if (Managers.Map.CanGo(randPos) && Managers.Obj.Find(randPos) == null)
+            if (Managers.Map.CanGo(randPos) && Managers.Obj.FindCreature(randPos) == null)
             {
                 _destCellPos = randPos;
                 State = CreatureState.Moving;
@@ -189,7 +188,7 @@ public class MonsterController : CreatureController
     IEnumerator CoStartPunch()
     {
         // 피격판정
-        GameObject go = Managers.Obj.Find(GetFrontCellPos());
+        GameObject go = Managers.Obj.FindCreature(GetFrontCellPos());
         if (go != null)
         {
             CreatureController cc = go.GetComponent<CreatureController>();

@@ -71,4 +71,9 @@ public class CreatureController : BaseController
         effect.GetComponent<Animator>().Play("start");
         Destroy(effect, 0.5f); // 이펙트 소멸
     }
+    
+    public virtual void UseSkill(int skillId)
+    {
+        
+    }
 }

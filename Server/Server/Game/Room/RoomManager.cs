@@ -14,6 +14,7 @@ namespace Server.Game
         {
             GameRoom gameRoom = new GameRoom();
             gameRoom.Init(mapId);
+            gameRoom.JobQ.Push(gameRoom.Init, mapId);
             
             lock (_lock)
             {

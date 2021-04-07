@@ -110,6 +110,9 @@ namespace Server.Game
         
         public virtual void OnDamaged(GameObject attacker, int damage)
         {
+            if(Room == null)
+                return;
+            
             Stat.Hp = Math.Max(Stat.Hp - damage, 0);
 
             S_ChangeHp changePacket = new S_ChangeHp();
@@ -123,21 +126,29 @@ namespace Server.Game
 
         public virtual void OnDead(GameObject attacker)
         {
+            if(Room == null)
+                return;
+            
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;
             Room.Broadcast(diePacket);
 
+            // 아래 LeaveGame, EnterGame 을 실행하는 부분은 순차대로 실행될거라 예상된 로직이므로 순차적으로 실행되지 않으면
+            // 정보가 가르게 업데이트 되어 혼란이 일어 날수 있다.
+            // 이를 피하기 위해 JobQ에 넣지 않고 해당 위치에서 바로 실행
+            // 이 방법이 가능한 이유는 OnDead 가 호출되는 부분이 JobQ에서 관리 되기 때문
+            // 만약 JobQ에서 관리 되지 않는 곳에서 바로 실행하면 문제가 생길 것이다.
             GameRoom room = Room;
-            room.LeaveGame(Id);
+            room.LeaveGame(Id); // 이 부분
 
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
             PosInfo.MoveDir = MoveDir.Down;
             PosInfo.PoxX = 0;
             PosInfo.PoxY = 0;
-            
-            room.EnterGame(this);
+
+            room.EnterGame(this); // 이 부분
         }
     }
 }

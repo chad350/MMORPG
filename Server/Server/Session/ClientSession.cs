@@ -51,8 +51,9 @@ namespace Server
 			MyPlayer.Stat.MergeFrom(stat);
 			
 			MyPlayer.Session = this;
-			
-			RoomManager.Instance.Find(1).EnterGame(MyPlayer);
+
+			GameRoom room = RoomManager.Instance.Find(1);
+			room.JobQ.Push(room.EnterGame, MyPlayer);
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -62,7 +63,8 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-			RoomManager.Instance.Find(1).LeaveGame(MyPlayer.info.ObjectId);
+			GameRoom room = RoomManager.Instance.Find(1);
+			room.JobQ.Push(room.LeaveGame, MyPlayer.info.ObjectId);
 			
 			SessionManager.Instance.Remove(this);
 

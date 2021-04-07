@@ -42,7 +42,7 @@ namespace Server.Game
                 }
                 
                 // 소멸
-                Room.LeaveGame(Id);
+                Room.JobQ.Push(Room.LeaveGame, Id);
             }
         }
     }

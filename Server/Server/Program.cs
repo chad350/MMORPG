@@ -49,8 +49,12 @@ namespace Server
 				
 				// Room Update
 				// 1. 무시하지만 단순한 방법
-				RoomManager.Instance.Find(1).Update();
+				//RoomManager.Instance.Find(1).Update();
 				//Thread.Sleep(100);
+
+				GameRoom room = RoomManager.Instance.Find(1);
+				room.JobQ.Push(room.Update);
+				Thread.Sleep(100);
 			}
 		}
 	}

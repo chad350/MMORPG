@@ -8,6 +8,7 @@ using ServerCore;
 using System.Net;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
+using Server.Data;
 using Server.Game;
 
 namespace Server
@@ -44,7 +45,11 @@ namespace Server
 			MyPlayer.info.PosInfo.MoveDir = MoveDir.Down;
 			MyPlayer.info.PosInfo.PoxX = 0;
 			MyPlayer.info.PosInfo.PoxY = 0;
-				
+
+			StatInfo stat = null;
+			DataManager.StatDict.TryGetValue(1, out stat);
+			MyPlayer.Stat.MergeFrom(stat);
+			
 			MyPlayer.Session = this;
 			
 			RoomManager.Instance.Find(1).EnterGame(MyPlayer);

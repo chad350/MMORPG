@@ -1,4 +1,5 @@
 using Google.Protobuf.Protocol;
+using Server.Data;
 
 namespace Server.Game
 {
@@ -16,11 +17,18 @@ namespace Server.Game
 
         public ObjectInfo info { get; set; } = new ObjectInfo();
         public PositionInfo PosInfo { get; private set; } = new PositionInfo();
+        public StatInfo Stat { get; private set; } = new StatInfo();
 
-        
+        public float Speed
+        {
+            get { return Stat.Speed; }
+            set { Stat.Speed = value; }
+        }
+
         public GameObject()
         {
             info.PosInfo = PosInfo;
+            info.StatInfo = Stat;
         }
         
         public Vector2Int CellPos
@@ -62,6 +70,11 @@ namespace Server.Game
             }
 
             return cellPos;
+        }
+
+        public virtual void OnDamaged(GameObject attacker, int damage)
+        {
+            
         }
     }
 }

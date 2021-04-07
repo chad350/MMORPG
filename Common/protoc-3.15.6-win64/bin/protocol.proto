@@ -83,6 +83,7 @@ message ObjectInfo {
   int32 objectId = 1; // db상 아이디 X   서버상 식별자 O
   string name = 2;
   PositionInfo posInfo = 3;
+  StatInfo statInfo = 4;
 }
 
 message PositionInfo {
@@ -90,6 +91,12 @@ message PositionInfo {
   MoveDir moveDir = 2;
   int32 poxX = 3;
   int32 poxY = 4;
+}
+
+message StatInfo{
+  int32 hp = 1;
+  int32 maxHp = 2;
+  float speed = 3;
 }
 
 message SkillInfo{

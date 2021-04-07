@@ -8,7 +8,26 @@ public class CreatureController : MonoBehaviour
 {
     public int Id { get; set; }
 
-    public float _speed = 5.0f;
+    StatInfo _stat = new StatInfo();
+    public StatInfo Stat
+    {
+        get { return _stat;}
+        set 
+        { 
+            if(_stat.Equals(value))
+                return;
+
+            _stat.Hp = value.Hp;
+            _stat.MaxHp = value.MaxHp;
+            _stat.Speed = value.Speed;
+        }
+    }
+
+    public float Speed
+    {
+        get { return Stat.Speed; }
+        set { Stat.Speed = value; }
+    }
 
     // 더티 플래그 - dirty flag
     protected bool _updated = false;
@@ -263,14 +282,14 @@ public class CreatureController : MonoBehaviour
         // 방향벡터의 크기
         // 목적지까지 얼마나남았는지 추출
         float dist = moveDir.magnitude;
-        if (dist < _speed * Time.deltaTime)
+        if (dist < Speed * Time.deltaTime)
         {
             transform.position = dest;
             MoveToNextPosition();
         }
         else
         {
-            transform.position += moveDir.normalized * _speed * Time.deltaTime;
+            transform.position += moveDir.normalized * Speed * Time.deltaTime;
             State = CreatureState.Moving;
         }
         

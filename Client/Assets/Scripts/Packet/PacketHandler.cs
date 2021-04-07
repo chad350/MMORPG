@@ -81,5 +81,21 @@ class PacketHandler
 			cc.Hp = changePacket.Hp;
 		}
 	}
+	
+	public static void S_DieHandler(PacketSession session, IMessage packet)
+	{
+		S_Die diePacket = packet as S_Die;
+		
+		GameObject go = Managers.Obj.FindById(diePacket.ObjectId);
+		if(go == null)
+			return;
+
+		CreatureController cc = go.GetComponent<CreatureController>();
+		if (cc != null)
+		{
+			cc.Hp = 0;
+			cc.OnDead();
+		}
+	}
 }
 

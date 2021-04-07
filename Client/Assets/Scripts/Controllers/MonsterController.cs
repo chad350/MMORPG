@@ -127,14 +127,6 @@ public class MonsterController : CreatureController
 
     public override void OnDamaged()
     {
-        base.OnDamaged();
-
-        // 이펙트 생성
-        GameObject effect = Managers.Resource.Instantiate("Effect/DieEffect");
-        effect.transform.position = transform.position;
-        effect.GetComponent<Animator>().Play("start");
-        GameObject.Destroy(effect, 0.5f); // 이펙트 소멸
-                    
         // 몬스터 삭제
         Managers.Obj.Remove(Id);
         Managers.Resource.Destroy(gameObject);

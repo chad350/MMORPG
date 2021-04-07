@@ -348,4 +348,15 @@ public class CreatureController : MonoBehaviour
     {
         
     }
+
+    public virtual void OnDead()
+    {
+        State = CreatureState.Dead;
+        
+        // 이펙트 생성
+        GameObject effect = Managers.Resource.Instantiate("Effect/DieEffect");
+        effect.transform.position = transform.position;
+        effect.GetComponent<Animator>().Play("start");
+        Destroy(effect, 0.5f); // 이펙트 소멸
+    }
 }

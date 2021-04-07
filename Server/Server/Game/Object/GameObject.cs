@@ -88,6 +88,21 @@ namespace Server.Game
 
         public virtual void OnDead(GameObject attacker)
         {
+            S_Die diePacket = new S_Die();
+            diePacket.ObjectId = Id;
+            diePacket.AttackerId = attacker.Id;
+            Room.Broadcast(diePacket);
+
+            GameRoom room = Room;
+            room.LeaveGame(Id);
+
+            Stat.Hp = Stat.MaxHp;
+            PosInfo.State = CreatureState.Idle;
+            PosInfo.MoveDir = MoveDir.Down;
+            PosInfo.PoxX = 0;
+            PosInfo.PoxY = 0;
+            
+            room.EnterGame(this);
         }
     }
 }

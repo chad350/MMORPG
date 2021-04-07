@@ -76,6 +76,7 @@ namespace Server.Game
             {
                 _target = null;
                 State = CreatureState.Idle;
+                BroadcastMove();
                 return;
             }
 
@@ -84,28 +85,38 @@ namespace Server.Game
             {
                 _target = null;
                 State = CreatureState.Idle;
+                BroadcastMove();
                 return;
             }
 
             List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, false);
-            if (path.Count < 2 || path.Count > _chaseCellDist)
+            if (path.Count <= 2 || path.Count > _chaseCellDist)
             {
                 _target = null;
                 State = CreatureState.Idle;
+                BroadcastMove();
                 return; 
             }
+            
+            // 스킬 사용할지 체크
+            
             
             // 이동
             Dir = GetDirFromVector(path[1] - CellPos);
             Room.Map.ApplyMove(this, path[1]);
-            
+
+            BroadcastMove();
+        }
+
+        void BroadcastMove()
+        {
             // 다른 플레이어한테도 알려준다.
             S_Move movePacket = new S_Move();
             movePacket.ObjectId = Id;
             movePacket.PosInfo = PosInfo;
             Room.Broadcast(movePacket);
         }
-        
+
         protected virtual void UpdateSkill()
         {
         }

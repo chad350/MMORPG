@@ -13,8 +13,6 @@ class PacketHandler
 	{
 		C_Move movePacket = packet as C_Move;
 		ClientSession clientSession = session as ClientSession;
-
-		Console.WriteLine($"C_Move - {movePacket.PosInfo.PoxX}, {movePacket.PosInfo.PoxY}");
 		
 		// 사용하기전에 한번 캐싱해서 사용
 		Player player = clientSession.MyPlayer;

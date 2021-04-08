@@ -26,7 +26,7 @@ namespace Server.Game
             monster.CellPos = new Vector2Int(0, 5);
             JobQ.Push(EnterGame, monster);
         }
-
+        
         public void Update()
         {
             foreach (Monster monster in _monsters.Values)
@@ -38,6 +38,8 @@ namespace Server.Game
             {
                 projectile.Update();
             }
+            
+            JobQ.Flush();
         }
 
         public void EnterGame(GameObject gameObject)

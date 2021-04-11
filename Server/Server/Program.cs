@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
+using Server.DB;
 using Server.Game;
 using ServerCore;
 using Timer = System.Timers.Timer;
@@ -35,7 +36,13 @@ namespace Server
 			ConfigManager.LoadConfig();
 			DataManager.LoadData();
 
-			var d = DataManager.StatDict;
+			// DB 테스트
+			using (AppDbContext db = new AppDbContext())
+			{
+				db.Accounts.Add(new AccountDb() {AccountName = "TestAccount"});
+				// AccountName 는 유니크 인덱스로 설정해뒀기 때문에 최초 실행 이후에는 에러가 발생
+				db.SaveChanges();
+			}
 			
 			// 3. Timer 를 이용해서 필요할 때에 호출한다.
 			// 기존 방식과 다르게 메인쓰레드가 아닌 다른 쓰레드에서 분산해서 일감을 처리

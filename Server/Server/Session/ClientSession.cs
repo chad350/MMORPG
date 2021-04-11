@@ -13,12 +13,15 @@ using Server.Game;
 
 namespace Server
 {
-	public class ClientSession : PacketSession
+	public partial class ClientSession : PacketSession
 	{
+		public PlayerServerState ServerState { get; private set; } = PlayerServerState.ServerStateLogin;
+		
 		// 현재 관리하고 있는 플레이어를 알면 코드 작성이 쉬워 진다.
 		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
 
+		#region Network
 		public void Send(IMessage packet)
 		{
 			string msgName = packet.Descriptor.Name.Replace("_", String.Empty);
@@ -41,24 +44,6 @@ namespace Server
 				S_Connected connectedPacket = new S_Connected();
 				Send(connectedPacket);
 			}
-
-			// 원래는 입장준비가 끝났다고 클라이언트에서 판단 되면 패킷을 보내고
-			// 해당 패킷을 받은다음 입장해야한다.
-			MyPlayer = ObjectManager.Instance.Add<Player>();
-			MyPlayer.info.Name = $"Player_{MyPlayer.info.ObjectId}";
-			MyPlayer.info.PosInfo.State = CreatureState.Idle;
-			MyPlayer.info.PosInfo.MoveDir = MoveDir.Down;
-			MyPlayer.info.PosInfo.PoxX = 0;
-			MyPlayer.info.PosInfo.PoxY = 0;
-
-			StatInfo stat = null;
-			DataManager.StatDict.TryGetValue(1, out stat);
-			MyPlayer.Stat.MergeFrom(stat);
-			
-			MyPlayer.Session = this;
-
-			GameRoom room = RoomManager.Instance.Find(1);
-			room.JobQ.Push(room.EnterGame, MyPlayer);
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)
@@ -80,5 +65,6 @@ namespace Server
 		{
 			//Console.WriteLine($"Transferred bytes: {numOfBytes}");
 		}
+		#endregion
 	}
 }

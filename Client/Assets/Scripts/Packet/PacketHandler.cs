@@ -100,5 +100,23 @@ class PacketHandler
 			cc.OnDead();
 		}
 	}
+	
+	public static void S_ConnectedHandler(PacketSession session, IMessage packet)
+	{
+		Debug.Log("S_ConnectedHandler");
+		C_Login loginPacket = new  C_Login();
+		
+		// 시스템에 따라 얻을수 있는 유니크 키
+		// 나중에 같은 기기에서 여러 계정을 사용하면 문제가 될 수 있다.
+		loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
+		
+		Managers.Network.Send(loginPacket);
+	}
+	
+	public static void S_LoginHandler(PacketSession session, IMessage packet)
+	{
+		S_Login LoginPacket = packet as S_Login;
+		Debug.Log($"LoginOk : {LoginPacket.LoginOk}");
+	}
 }
 

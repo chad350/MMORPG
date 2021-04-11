@@ -36,7 +36,12 @@ namespace Server
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
-			
+
+			{
+				S_Connected connectedPacket = new S_Connected();
+				Send(connectedPacket);
+			}
+
 			// 원래는 입장준비가 끝났다고 클라이언트에서 판단 되면 패킷을 보내고
 			// 해당 패킷을 받은다음 입장해야한다.
 			MyPlayer = ObjectManager.Instance.Add<Player>();

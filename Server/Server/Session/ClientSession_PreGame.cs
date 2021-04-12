@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.DB;
 using Server.Game;
+using Server.Utils;
 using ServerCore;
 
 namespace Server
@@ -47,6 +48,7 @@ namespace Server
                     {
                         LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
                         {
+                            PlayerDbId = playerDb.PlayerDbId,
                             Name =  playerDb.PlayerName,
                             StatInfo = new StatInfo()
                             {
@@ -77,7 +79,7 @@ namespace Server
                     // 찾은 계정이 없다면 계정 생성 후 로그인 
                     AccountDb newAccount = new AccountDb() {AccountName = loginPacket.UniqueId};
                     db.Accounts.Add(newAccount);
-                    db.SaveChanges(); // 실패 시 예외처리
+                    db.SaveChangesEx(); // 실패 시 예외처리
 				
                     // AccountDbId 메모리에 기억
                     AccountDbId = newAccount.AccountDbId;
@@ -117,21 +119,22 @@ namespace Server
                     PlayerDb newPlayerDb = new PlayerDb()
                     {
                         PlayerName = createPacket.Name,
-                            Level =  stat.Level,
-                            Hp = stat.Hp,
-                            MaxHp = stat.MaxHp,
-                            Attack = stat.Attack,
-                            Speed = stat.Speed,
-                            TotalExp = 0,
-                            AccountDbId = AccountDbId
+                        Level =  stat.Level,
+                        Hp = stat.Hp,
+                        MaxHp = stat.MaxHp,
+                        Attack = stat.Attack,
+                        Speed = stat.Speed,
+                        TotalExp = 0,
+                        AccountDbId = AccountDbId
                     };
 
                     db.Players.Add(newPlayerDb);
-                    db.SaveChanges(); // 예외처리
+                    db.SaveChangesEx(); // 예외처리
                     
                     // 메모리에 추가
                     LobbyPlayerInfo lobbyPlayer = new LobbyPlayerInfo()
                     {
+                        PlayerDbId = newPlayerDb.PlayerDbId,
                         Name =  createPacket.Name,
                         StatInfo = new StatInfo()
                         {
@@ -169,6 +172,7 @@ namespace Server
             // 원래는 입장준비가 끝났다고 클라이언트에서 판단 되면 패킷을 보내고
             // 해당 패킷을 받은다음 입장해야한다.
             MyPlayer = ObjectManager.Instance.Add<Player>();
+            MyPlayer.PlayerDbId = playerInfo.PlayerDbId;
             MyPlayer.info.Name = playerInfo.Name;
             MyPlayer.info.PosInfo.State = CreatureState.Idle;
             MyPlayer.info.PosInfo.MoveDir = MoveDir.Down;

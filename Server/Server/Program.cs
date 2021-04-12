@@ -66,6 +66,8 @@ namespace Server
 				// GameRoom room = RoomManager.Instance.Find(1);
 				// room.JobQ.Push(room.Update);
 				// Thread.Sleep(100);
+				
+				DbTransaction.Instance.Flush();
 			}
 		}
 	}

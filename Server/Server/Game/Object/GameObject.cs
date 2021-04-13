@@ -150,5 +150,10 @@ namespace Server.Game
 
             room.EnterGame(this); // 이 부분
         }
+
+        public virtual GameObject GetOwner()
+        {
+            return this;
+        }
     }
 }

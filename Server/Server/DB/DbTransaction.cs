@@ -1,5 +1,7 @@
 using System;
+using Google.Protobuf.Protocol;
 using Microsoft.EntityFrameworkCore;
+using Server.Data;
 using Server.Game;
 using Server.Utils;
 
@@ -78,5 +80,52 @@ namespace Server.DB
             Console.WriteLine($"Hp Saved : {hp}");
         }
         #endregion
+
+        public static void RewardPlayer(Player player, RewardData rewardData, GameRoom room)
+        {
+            if(player == null || rewardData == null || room == null)
+                return;
+
+            // 살짝 문제가 있긴하다.
+            int? slot = player.Inven.GetEmptySlot();
+            if(slot == null)
+                return;
+            
+            ItemDb itemDb = new ItemDb()
+            {
+                TemplateId = rewardData.itemId,
+                Count = rewardData.count,
+                Slot = slot.Value,
+                OwnerDbId = player.PlayerDbId
+            };
+            
+            // You (Db)
+            Instance.Push(() =>
+            {
+                using (AppDbContext db = new AppDbContext())
+                {
+                    db.Items.Add(itemDb);
+                    bool success = db.SaveChangesEx();
+                    if(success)
+                    {
+                        // Me (GameRoom)
+                        room.JobQ.Push(() =>
+                        {
+                            Item newItem = Item.MakeItem(itemDb);
+                            player.Inven.Add(newItem);
+                            
+                            // 클라이언트에게 전송
+                            S_AddItem itemPacket = new S_AddItem();
+                            ItemInfo itemInfo = new ItemInfo();
+                            itemInfo.MergeFrom(newItem.Info);
+                            itemPacket.Items.Add(itemInfo);
+                            
+                            player.Session.Send(itemPacket);
+                        });
+                    }
+                }
+            });
+            
+        }
     }
 }

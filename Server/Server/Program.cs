@@ -36,49 +36,7 @@ namespace Server
 		{
 			ConfigManager.LoadConfig();
 			DataManager.LoadData();
-
-			// Test Code
-			using (AppDbContext db = new AppDbContext())
-			{
-				PlayerDb player = db.Players.FirstOrDefault();
-				if (player != null)
-				{
-					db.Items.Add(new ItemDb()
-					{
-						TemplateId = 1,
-						Count = 1,
-						Slot = 0,
-						Owner = player
-					});
-					
-					db.Items.Add(new ItemDb()
-					{
-						TemplateId = 100,
-						Count = 1,
-						Slot = 1,
-						Owner = player
-					});
-					
-					db.Items.Add(new ItemDb()
-					{
-						TemplateId = 101,
-						Count = 1,
-						Slot = 2,
-						Owner = player
-					});
-					
-					db.Items.Add(new ItemDb()
-					{
-						TemplateId = 200,
-						Count = 10,
-						Slot = 5,
-						Owner = player
-					});
-				}
-
-				db.SaveChanges();
-			}
-
+			
 			// 3. Timer 를 이용해서 필요할 때에 호출한다.
 			// 기존 방식과 다르게 메인쓰레드가 아닌 다른 쓰레드에서 분산해서 일감을 처리
 			GameRoom room = RoomManager.Instance.Add(1);

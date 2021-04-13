@@ -45,5 +45,10 @@ namespace Server.Game
                 Room.JobQ.Push(Room.LeaveGame, Id);
             }
         }
+
+        public override GameObject GetOwner()
+        {
+            return Owner;
+        }
     }
 }

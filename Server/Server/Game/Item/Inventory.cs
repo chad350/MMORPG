@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Game
 {
@@ -25,6 +26,17 @@ namespace Server.Game
             {
                 if (condition.Invoke(item))
                     return item;
+            }
+            return null;
+        }
+
+        public int? GetEmptySlot()
+        {
+            for (int slot = 0; slot < 20; slot++)
+            {
+                Item item = _items.Values.FirstOrDefault(i => i.Slot == slot);
+                if (item == null)
+                    return slot;
             }
             return null;
         }

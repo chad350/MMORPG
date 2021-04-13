@@ -168,11 +168,32 @@ class PacketHandler
 		}
 
 		// UI 에서 표시
-		UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-		UI_Inventory invenUI = gameSceneUI.InvenUI;
+		// UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+		// UI_Inventory invenUI = gameSceneUI.InvenUI;
+		//
+		// invenUI.gameObject.SetActive(true);
+		// invenUI.RefreshUI();
+	}
+	
+	public static void S_AddItemHandler(PacketSession session, IMessage packet)
+	{
+		S_AddItem itemListPacket = packet as S_AddItem;
+
+		// 메모리에 아이템 정보 적용
+		foreach (ItemInfo itemInfo in itemListPacket.Items)
+		{
+			Item item = Item.MakeItem(itemInfo);
+			Managers.Inven.Add(item);
+		}
+
+		// UI 에서 표시
+		// UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+		// UI_Inventory invenUI = gameSceneUI.InvenUI;
+		//
+		// invenUI.gameObject.SetActive(true);
+		// invenUI.RefreshUI();
 		
-		invenUI.gameObject.SetActive(true);
-		invenUI.RefreshUI();
+		Debug.Log("아이템을 획득했습니다.");
 	}
 }
 

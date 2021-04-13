@@ -8,7 +8,13 @@ public class Managers : MonoBehaviour
     static Managers Instance { get { Init(); return s_instance; } } // 유일한 매니저를 갖고온다
 
 	#region Contents
+	private InventoryManager _inven = new InventoryManager();
 
+	public static InventoryManager Inven
+	{
+		get { return Instance._inven; }
+	}
+	
 	private MapManager _map = new MapManager();
 
 	public static MapManager Map

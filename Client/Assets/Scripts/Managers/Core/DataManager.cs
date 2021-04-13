@@ -11,11 +11,13 @@ public interface ILoader<Key, Value>
 
 public class DataManager
 {
-    public static Dictionary<int, Skill> SkillDict { get; private set; } = new Dictionary<int, Skill>();
+    public Dictionary<int, Skill> SkillDict { get; private set; } = new Dictionary<int, Skill>();
+    public Dictionary<int, ItemData> ItemDict { get; private set; } = new Dictionary<int, ItemData>();
 
     public void Init()
     {
         SkillDict = LoadJson<SkillData, int, Skill>("SkillData").MakeDict();
+        ItemDict = LoadJson<ItemLoader, int, ItemData>("ItemData").MakeDict();
     }
 
     Loader LoadJson<Loader, Key, Value>(string path) where Loader : ILoader<Key, Value>

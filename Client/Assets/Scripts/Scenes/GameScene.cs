@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameScene : BaseScene
 {
+    private UI_GameScene _sceneUI;
+    
     protected override void Init()
     {
         base.Init();
@@ -13,6 +15,10 @@ public class GameScene : BaseScene
         Managers.Map.LoadMap(1);
 
         Screen.SetResolution(640, 480, false);
+
+
+        _sceneUI = Managers.UI.ShowSceneUI<UI_GameScene>();
+        
         
         // GameObject player = Managers.Resource.Instantiate("Creature/Player");
         // player.name = "Player";
@@ -35,7 +41,7 @@ public class GameScene : BaseScene
         //     
         //     Managers.Obj.Add(monster);
         // }
-        
+
         //Managers.UI.ShowSceneUI<UI_Inven>();
         //Dictionary<int, Data.Stat> dict = Managers.Data.StatDict;
         //gameObject.GetOrAddComponent<CursorController>();

@@ -181,6 +181,32 @@ namespace Server
             MyPlayer.Stat.MergeFrom(playerInfo.StatInfo);
             MyPlayer.Session = this;
 
+            S_ItemList itemListPacket = new S_ItemList();
+            // 아이템 목록을 가지고 온다
+            using (AppDbContext db = new AppDbContext())
+            {
+                List<ItemDb> items = db.Items
+                    .Where(i => i.OwnerDbId == playerInfo.PlayerDbId)
+                    .ToList();
+
+                // 인벤토리
+                foreach (ItemDb itemDb in items)
+                {
+                    Item item = Item.MakeItem(itemDb);
+                    if (item != null)
+                    {
+                        MyPlayer.Inven.Add(item);
+                        
+                        ItemInfo info = new ItemInfo();
+                        info.MergeFrom(item.Info);
+                        itemListPacket.Items.Add(info);
+                    }
+                }
+            }
+            
+            // 클라에게 아이템 목록 전달
+            Send(itemListPacket);
+            
             ServerState = PlayerServerState.ServerStateGame;
             
             GameRoom room = RoomManager.Instance.Find(1);

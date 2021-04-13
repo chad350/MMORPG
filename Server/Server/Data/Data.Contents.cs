@@ -59,4 +59,61 @@ namespace Server.Data
         }
     }
     #endregion
+
+    #region Item
+
+    public class ItemData
+    {
+        public int id;
+        public string name; // 테이블 처리할떄는 이름이 아닌 아이디를 넣어준다.
+        public ItemType itemType;
+    }
+
+    public class WeaponData : ItemData
+    {
+        public WeaponType weaponType;
+        public int damage;
+    }
+    
+    public class ArmorData : ItemData
+    {
+        public ArmorType armorType;
+        public int defence;
+    }
+    
+    public class ConsumableData : ItemData
+    {
+        public ConsumableType consumableType;
+        public int maxCount;
+    }
+
+    [Serializable]
+    public class ItemLoader : ILoader<int, ItemData>
+    {
+        public List<WeaponData> weapons = new List<WeaponData>();
+        public List<ArmorData> armors = new List<ArmorData>();
+        public List<ConsumableData> consumables = new List<ConsumableData>();
+
+        public Dictionary<int, ItemData> MakeDict()
+        {
+            Dictionary<int, ItemData> dict = new Dictionary<int, ItemData>();
+            foreach (ItemData item in weapons)
+            {
+                item.itemType = ItemType.Weapon;
+                dict.Add(item.id, item);
+            }
+            foreach (ItemData item in armors)
+            {
+                item.itemType = ItemType.Armor;
+                dict.Add(item.id, item);
+            }
+            foreach (ItemData item in consumables)
+            {
+                item.itemType = ItemType.Consumable;
+                dict.Add(item.id, item);
+            }
+            return dict;
+        }
+    }
+    #endregion
 }

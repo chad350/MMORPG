@@ -153,5 +153,15 @@ class PacketHandler
 			Managers.Network.Send(enterGamePacket);
 		}
 	}
+	
+	public static void S_ItemListHandler(PacketSession session, IMessage packet)
+	{
+		S_ItemList itemListPacket = packet as S_ItemList;
+
+		foreach (ItemInfo itemInfo in itemListPacket.Items)
+		{
+			Debug.Log($"TemplateId : {itemInfo.TemplateId}    Count : {itemInfo.Count}");
+		}
+	}
 }
 

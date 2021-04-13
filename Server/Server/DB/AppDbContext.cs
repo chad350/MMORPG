@@ -8,6 +8,7 @@ namespace Server.DB
     {
         public DbSet<AccountDb> Accounts { get; set; }
         public DbSet<PlayerDb> Players { get; set; }
+        public DbSet<ItemDb> Items { get; set; }
 
         private static readonly ILoggerFactory _logger = LoggerFactory.Create(builder => builder.AddConsole());
         
@@ -17,7 +18,8 @@ namespace Server.DB
         {
             optionsBuilder
                 .UseLoggerFactory(_logger)
-                .UseSqlServer(ConfigManager.Config == null ? _connectionString : ConfigManager.Config.connectionString);
+                .UseSqlServer(_connectionString);
+                //.UseSqlServer(ConfigManager.Config == null ? _connectionString : ConfigManager.Config.connectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

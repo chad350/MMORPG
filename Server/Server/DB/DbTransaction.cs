@@ -7,7 +7,7 @@ using Server.Utils;
 
 namespace Server.DB
 {
-    public class DbTransaction : JobSerializer
+    public partial class DbTransaction : JobSerializer
     {
         public static DbTransaction Instance { get; } = new DbTransaction();
 
@@ -87,6 +87,11 @@ namespace Server.DB
                 return;
 
             // 살짝 문제가 있긴하다.
+            // 1) DB 에다가 저장 요청 - 요청이 동시에 들어올 경우 같은 데이터를 가지고 DB에 요청 할 수도 있다.
+            // 데이터를 긁어올때 해당데이터를 예약상태로 두던 해서 다음 데이터를 가져갈때 확인해야한다.
+            // 2) DB 저장 완료
+            // 3) 메모리에 적용
+            
             int? slot = player.Inven.GetEmptySlot();
             if(slot == null)
                 return;

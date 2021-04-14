@@ -185,15 +185,36 @@ class PacketHandler
 			Item item = Item.MakeItem(itemInfo);
 			Managers.Inven.Add(item);
 		}
-
-		// UI 에서 표시
-		// UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-		// UI_Inventory invenUI = gameSceneUI.InvenUI;
-		//
-		// invenUI.gameObject.SetActive(true);
-		// invenUI.RefreshUI();
 		
 		Debug.Log("아이템을 획득했습니다.");
+		
+		// UI 에서 표시
+		UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+		UI_Inventory invenUI = gameSceneUI.InvenUI;
+		invenUI.RefreshUI();
+	}
+	
+	public static void S_EquipItemHandler(PacketSession session, IMessage packet)
+	{
+		S_EquipItem equipItemPacket = packet as S_EquipItem;
+
+		// 메모리에 아이템 정보 적용
+		Item item = Managers.Inven.Get(equipItemPacket.ItemDbId);
+		if(item == null)
+			return;
+
+		item.Equipped = equipItemPacket.Equipped;
+		Debug.Log("아이템 착용 변경");
+		
+		// UI 에서 표시
+		UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
+		UI_Inventory invenUI = gameSceneUI.InvenUI;
+		invenUI.RefreshUI();
+	}
+	
+	public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
+	{
+		S_ChangeStat changeStatePacket = packet as S_ChangeStat;
 	}
 }
 

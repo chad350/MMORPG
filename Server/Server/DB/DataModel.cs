@@ -39,6 +39,7 @@ namespace Server.DB
         public int Count { get; set; }
         // 응용하면 인벤토리의 위치, 장착 아이템, 창고 아이템들을 설정 할 수도 있다.
         public int Slot { get; set; }
+        public bool Equipped { get; set; } = false;
 
         [ForeignKey("Owner")]
         public int? OwnerDbId { get; set; }

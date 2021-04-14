@@ -28,130 +28,543 @@
     <database id="2" parent="1" name="EfCoreDb">
       <ObjectId>6</ObjectId>
     </database>
-    <database id="3" parent="1" name="RankingDB">
+    <database id="3" parent="1" name="GameDB">
+      <ObjectId>7</ObjectId>
+      <PermissionsCheckSum>3196235284</PermissionsCheckSum>
+      <Grants>7|database||0|view any column encryption key definition|G
+7|database||0|view any column master key definition|G
+7|database||1|connect|G
+</Grants>
+      <Fingerprint>1.37717/00000000-0000-0000-0000-000000000000@DESKTOP-H45P84N\LOCALDB#09244982</Fingerprint>
+    </database>
+    <database id="4" parent="1" name="RankingDB">
       <ObjectId>5</ObjectId>
     </database>
-    <database id="4" parent="1" name="master">
+    <database id="5" parent="1" name="master">
       <ObjectId>1</ObjectId>
       <Current>1</Current>
       <Collation>SQL_Latin1_General_CP1_CI_AS</Collation>
     </database>
-    <database id="5" parent="1" name="model">
+    <database id="6" parent="1" name="model">
       <ObjectId>3</ObjectId>
       <Collation>SQL_Latin1_General_CP1_CI_AS</Collation>
     </database>
-    <database id="6" parent="1" name="msdb">
+    <database id="7" parent="1" name="msdb">
       <ObjectId>4</ObjectId>
       <Collation>SQL_Latin1_General_CP1_CI_AS</Collation>
     </database>
-    <database id="7" parent="1" name="tempdb">
+    <database id="8" parent="1" name="tempdb">
       <ObjectId>2</ObjectId>
       <Collation>SQL_Latin1_General_CP1_CI_AS</Collation>
     </database>
-    <login id="8" parent="1" name="sa">
+    <login id="9" parent="1" name="sa">
       <ObjectId>1</ObjectId>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="9" parent="1" name="public">
+    <login id="10" parent="1" name="public">
       <ObjectId>2</ObjectId>
       <Type>server-role</Type>
       <Enabled>1</Enabled>
     </login>
-    <login id="10" parent="1" name="sysadmin">
+    <login id="11" parent="1" name="sysadmin">
       <ObjectId>3</ObjectId>
       <Type>server-role</Type>
       <Enabled>1</Enabled>
     </login>
-    <login id="11" parent="1" name="securityadmin">
+    <login id="12" parent="1" name="securityadmin">
       <ObjectId>4</ObjectId>
       <Type>server-role</Type>
       <Enabled>1</Enabled>
     </login>
-    <login id="12" parent="1" name="serveradmin">
+    <login id="13" parent="1" name="serveradmin">
       <ObjectId>5</ObjectId>
       <Type>server-role</Type>
       <Enabled>1</Enabled>
     </login>
-    <login id="13" parent="1" name="setupadmin">
+    <login id="14" parent="1" name="setupadmin">
       <ObjectId>6</ObjectId>
       <Type>server-role</Type>
       <Enabled>1</Enabled>
     </login>
-    <login id="14" parent="1" name="processadmin">
+    <login id="15" parent="1" name="processadmin">
       <ObjectId>7</ObjectId>
       <Type>server-role</Type>
       <Enabled>1</Enabled>
     </login>
-    <login id="15" parent="1" name="diskadmin">
+    <login id="16" parent="1" name="diskadmin">
       <ObjectId>8</ObjectId>
       <Type>server-role</Type>
       <Enabled>1</Enabled>
     </login>
-    <login id="16" parent="1" name="dbcreator">
+    <login id="17" parent="1" name="dbcreator">
       <ObjectId>9</ObjectId>
       <Type>server-role</Type>
       <Enabled>1</Enabled>
     </login>
-    <login id="17" parent="1" name="bulkadmin">
+    <login id="18" parent="1" name="bulkadmin">
       <ObjectId>10</ObjectId>
       <Type>server-role</Type>
       <Enabled>1</Enabled>
     </login>
-    <login id="18" parent="1" name="##MS_SQLResourceSigningCertificate##">
+    <login id="19" parent="1" name="##MS_SQLResourceSigningCertificate##">
       <ObjectId>101</ObjectId>
       <Type>certificate-mapped-login</Type>
       <Enabled>1</Enabled>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="19" parent="1" name="##MS_SQLReplicationSigningCertificate##">
+    <login id="20" parent="1" name="##MS_SQLReplicationSigningCertificate##">
       <ObjectId>102</ObjectId>
       <Type>certificate-mapped-login</Type>
       <Enabled>1</Enabled>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="20" parent="1" name="##MS_SQLAuthenticatorCertificate##">
+    <login id="21" parent="1" name="##MS_SQLAuthenticatorCertificate##">
       <ObjectId>103</ObjectId>
       <Type>certificate-mapped-login</Type>
       <Enabled>1</Enabled>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="21" parent="1" name="##MS_PolicySigningCertificate##">
+    <login id="22" parent="1" name="##MS_PolicySigningCertificate##">
       <ObjectId>105</ObjectId>
       <Type>certificate-mapped-login</Type>
       <Enabled>1</Enabled>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="22" parent="1" name="##MS_SmoExtendedSigningCertificate##">
+    <login id="23" parent="1" name="##MS_SmoExtendedSigningCertificate##">
       <ObjectId>106</ObjectId>
       <Type>certificate-mapped-login</Type>
       <Enabled>1</Enabled>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="23" parent="1" name="##MS_PolicyEventProcessingLogin##">
+    <login id="24" parent="1" name="##MS_PolicyEventProcessingLogin##">
       <ObjectId>256</ObjectId>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="24" parent="1" name="##MS_PolicyTsqlExecutionLogin##">
+    <login id="25" parent="1" name="##MS_PolicyTsqlExecutionLogin##">
       <ObjectId>257</ObjectId>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="25" parent="1" name="##MS_AgentSigningCertificate##">
+    <login id="26" parent="1" name="##MS_AgentSigningCertificate##">
       <ObjectId>258</ObjectId>
       <Type>certificate-mapped-login</Type>
       <Enabled>1</Enabled>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="26" parent="1" name="DESKTOP-H45P84N\yyc29">
+    <login id="27" parent="1" name="DESKTOP-H45P84N\yyc29">
       <ObjectId>259</ObjectId>
       <Type>windows-login</Type>
       <Enabled>1</Enabled>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
-    <login id="27" parent="1" name="NT SERVICE\SQLWriter">
+    <login id="28" parent="1" name="NT SERVICE\SQLWriter">
       <ObjectId>260</ObjectId>
       <Type>windows-login</Type>
       <Enabled>1</Enabled>
       <DefaultDatabase>master</DefaultDatabase>
     </login>
+    <schema id="29" parent="3" name="INFORMATION_SCHEMA">
+      <ObjectId>3</ObjectId>
+    </schema>
+    <schema id="30" parent="3" name="db_accessadmin">
+      <ObjectId>16385</ObjectId>
+    </schema>
+    <schema id="31" parent="3" name="db_backupoperator">
+      <ObjectId>16389</ObjectId>
+    </schema>
+    <schema id="32" parent="3" name="db_datareader">
+      <ObjectId>16390</ObjectId>
+    </schema>
+    <schema id="33" parent="3" name="db_datawriter">
+      <ObjectId>16391</ObjectId>
+    </schema>
+    <schema id="34" parent="3" name="db_ddladmin">
+      <ObjectId>16387</ObjectId>
+    </schema>
+    <schema id="35" parent="3" name="db_denydatareader">
+      <ObjectId>16392</ObjectId>
+    </schema>
+    <schema id="36" parent="3" name="db_denydatawriter">
+      <ObjectId>16393</ObjectId>
+    </schema>
+    <schema id="37" parent="3" name="db_owner">
+      <ObjectId>16384</ObjectId>
+    </schema>
+    <schema id="38" parent="3" name="db_securityadmin">
+      <ObjectId>16386</ObjectId>
+    </schema>
+    <schema id="39" parent="3" name="dbo">
+      <ObjectId>1</ObjectId>
+      <IntrospectionTimestamp>2021-04-15.07:23:42.330</IntrospectionTimestamp>
+      <Current>1</Current>
+    </schema>
+    <schema id="40" parent="3" name="guest">
+      <ObjectId>2</ObjectId>
+    </schema>
+    <schema id="41" parent="3" name="sys">
+      <ObjectId>4</ObjectId>
+    </schema>
+    <role id="42" parent="3" name="public">
+      <ObjectId>0</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="43" parent="3" name="dbo">
+      <ObjectId>1</ObjectId>
+      <Type>windows-user</Type>
+      <DefaultSchema>dbo</DefaultSchema>
+      <AuthType>windows</AuthType>
+    </role>
+    <role id="44" parent="3" name="guest">
+      <ObjectId>2</ObjectId>
+      <DefaultSchema>guest</DefaultSchema>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="45" parent="3" name="INFORMATION_SCHEMA">
+      <ObjectId>3</ObjectId>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="46" parent="3" name="sys">
+      <ObjectId>4</ObjectId>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="47" parent="3" name="db_owner">
+      <ObjectId>16384</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="48" parent="3" name="db_accessadmin">
+      <ObjectId>16385</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="49" parent="3" name="db_securityadmin">
+      <ObjectId>16386</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="50" parent="3" name="db_ddladmin">
+      <ObjectId>16387</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="51" parent="3" name="db_backupoperator">
+      <ObjectId>16389</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="52" parent="3" name="db_datareader">
+      <ObjectId>16390</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="53" parent="3" name="db_datawriter">
+      <ObjectId>16391</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="54" parent="3" name="db_denydatareader">
+      <ObjectId>16392</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <role id="55" parent="3" name="db_denydatawriter">
+      <ObjectId>16393</ObjectId>
+      <OwnerId>1</OwnerId>
+      <Type>database-role</Type>
+      <AuthType>none</AuthType>
+    </role>
+    <table id="56" parent="39" name="Account">
+      <ObjectId>597577167</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:59.057</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-14.08:29:59.140</ModifiedTimestamp>
+    </table>
+    <table id="57" parent="39" name="Item">
+      <ObjectId>805577908</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:59.150</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-15.07:23:26.870</ModifiedTimestamp>
+    </table>
+    <table id="58" parent="39" name="Player">
+      <ObjectId>629577281</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:59.057</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-14.08:29:59.167</ModifiedTimestamp>
+    </table>
+    <table id="59" parent="39" name="__EFMigrationsHistory">
+      <ObjectId>565577053</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:58.977</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-14.08:29:58.977</ModifiedTimestamp>
+    </table>
+    <column id="60" parent="56" name="AccountDbId">
+      <Position>1</Position>
+      <SequenceIdentity>1</SequenceIdentity>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="61" parent="56" name="AccountName">
+      <Position>2</Position>
+      <DataType>nvarchar(450 char)|0s</DataType>
+    </column>
+    <index id="62" parent="56" name="PK_Account">
+      <Position>1</Position>
+      <ColNames>AccountDbId</ColNames>
+      <Clustering>1</Clustering>
+      <Unique>1</Unique>
+    </index>
+    <index id="63" parent="56" name="IX_Account_AccountName">
+      <Position>2</Position>
+      <ColNames>AccountName</ColNames>
+      <Unique>1</Unique>
+      <Condition>[AccountName] IS NOT NULL</Condition>
+    </index>
+    <key id="64" parent="56" name="PK_Account">
+      <ObjectId>613577224</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:59.057</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-14.08:29:59.057</ModifiedTimestamp>
+      <ColNames>AccountDbId</ColNames>
+      <UnderlyingIndexName>PK_Account</UnderlyingIndexName>
+      <Primary>1</Primary>
+    </key>
+    <column id="65" parent="57" name="ItemDbId">
+      <Position>1</Position>
+      <SequenceIdentity>1</SequenceIdentity>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="66" parent="57" name="TemplateId">
+      <Position>2</Position>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="67" parent="57" name="Count">
+      <Position>3</Position>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="68" parent="57" name="Slot">
+      <Position>4</Position>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="69" parent="57" name="OwnerDbId">
+      <Position>5</Position>
+      <DataType>int|0s</DataType>
+    </column>
+    <column id="70" parent="57" name="Equipped">
+      <Position>6</Position>
+      <DefaultConstraintName>DF__Item__Equipped__34C8D9D1</DefaultConstraintName>
+      <DefaultExpression>CONVERT([bit],0)</DefaultExpression>
+      <DataType>bit|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="71" parent="57" name="PK_Item">
+      <Position>1</Position>
+      <ColNames>ItemDbId</ColNames>
+      <Clustering>1</Clustering>
+      <Unique>1</Unique>
+    </index>
+    <index id="72" parent="57" name="IX_Item_OwnerDbId">
+      <Position>2</Position>
+      <ColNames>OwnerDbId</ColNames>
+    </index>
+    <key id="73" parent="57" name="PK_Item">
+      <ObjectId>821577965</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:59.153</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-14.08:29:59.153</ModifiedTimestamp>
+      <ColNames>ItemDbId</ColNames>
+      <UnderlyingIndexName>PK_Item</UnderlyingIndexName>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="74" parent="57" name="FK_Item_Player_OwnerDbId">
+      <ObjectId>837578022</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:59.153</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-14.08:29:59.153</ModifiedTimestamp>
+      <ColNames>OwnerDbId</ColNames>
+      <RefTableId>629577281</RefTableId>
+      <RefTableName>Player</RefTableName>
+      <RefKeyName>PK_Player</RefKeyName>
+      <RefColNames>PlayerDbId</RefColNames>
+    </foreign-key>
+    <default id="75" parent="57" name="DF__Item__Equipped__34C8D9D1">
+      <ObjectId>885578193</ObjectId>
+      <NameSurrogate>1</NameSurrogate>
+      <ModifiedTimestamp>2021-04-15.07:23:26.873</ModifiedTimestamp>
+      <ColNames>Equipped</ColNames>
+      <DefaultExpression>CONVERT([bit],0)</DefaultExpression>
+    </default>
+    <column id="76" parent="58" name="PlayerDbId">
+      <Position>1</Position>
+      <SequenceIdentity>1</SequenceIdentity>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="77" parent="58" name="PlayerName">
+      <Position>2</Position>
+      <DataType>nvarchar(450 char)|0s</DataType>
+    </column>
+    <column id="78" parent="58" name="AccountDbId">
+      <Position>3</Position>
+      <DefaultConstraintName>DF__Player__AccountD__286302EC</DefaultConstraintName>
+      <DefaultExpression>0</DefaultExpression>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="79" parent="58" name="Attack">
+      <Position>4</Position>
+      <DefaultConstraintName>DF__Player__Attack__29572725</DefaultConstraintName>
+      <DefaultExpression>0</DefaultExpression>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="80" parent="58" name="Hp">
+      <Position>5</Position>
+      <DefaultConstraintName>DF__Player__Hp__2A4B4B5E</DefaultConstraintName>
+      <DefaultExpression>0</DefaultExpression>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="81" parent="58" name="Level">
+      <Position>6</Position>
+      <DefaultConstraintName>DF__Player__Level__2B3F6F97</DefaultConstraintName>
+      <DefaultExpression>0</DefaultExpression>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="82" parent="58" name="MaxHp">
+      <Position>7</Position>
+      <DefaultConstraintName>DF__Player__MaxHp__2C3393D0</DefaultConstraintName>
+      <DefaultExpression>0</DefaultExpression>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="83" parent="58" name="Speed">
+      <Position>8</Position>
+      <DefaultConstraintName>DF__Player__Speed__2D27B809</DefaultConstraintName>
+      <DefaultExpression>CONVERT([real],0)</DefaultExpression>
+      <DataType>real|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="84" parent="58" name="TotalExp">
+      <Position>9</Position>
+      <DefaultConstraintName>DF__Player__TotalExp__2E1BDC42</DefaultConstraintName>
+      <DefaultExpression>0</DefaultExpression>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="85" parent="58" name="PK_Player">
+      <Position>1</Position>
+      <ColNames>PlayerDbId</ColNames>
+      <Clustering>1</Clustering>
+      <Unique>1</Unique>
+    </index>
+    <index id="86" parent="58" name="IX_Player_AccountDbId">
+      <Position>2</Position>
+      <ColNames>AccountDbId</ColNames>
+    </index>
+    <index id="87" parent="58" name="IX_Player_PlayerName">
+      <Position>3</Position>
+      <ColNames>PlayerName</ColNames>
+      <Unique>1</Unique>
+      <Condition>[PlayerName] IS NOT NULL</Condition>
+    </index>
+    <key id="88" parent="58" name="PK_Player">
+      <ObjectId>645577338</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:59.060</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-14.08:29:59.060</ModifiedTimestamp>
+      <ColNames>PlayerDbId</ColNames>
+      <UnderlyingIndexName>PK_Player</UnderlyingIndexName>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="89" parent="58" name="FK_Player_Account_AccountDbId">
+      <ObjectId>789577851</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:59.140</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-14.08:29:59.140</ModifiedTimestamp>
+      <ColNames>AccountDbId</ColNames>
+      <RefTableId>597577167</RefTableId>
+      <RefTableName>Account</RefTableName>
+      <RefKeyName>PK_Account</RefKeyName>
+      <RefColNames>AccountDbId</RefColNames>
+      <OnDelete>cascade</OnDelete>
+    </foreign-key>
+    <default id="90" parent="58" name="DF__Player__AccountD__286302EC">
+      <ObjectId>677577452</ObjectId>
+      <NameSurrogate>1</NameSurrogate>
+      <ModifiedTimestamp>2021-04-14.08:29:59.133</ModifiedTimestamp>
+      <ColNames>AccountDbId</ColNames>
+      <DefaultExpression>0</DefaultExpression>
+    </default>
+    <default id="91" parent="58" name="DF__Player__Attack__29572725">
+      <ObjectId>693577509</ObjectId>
+      <NameSurrogate>1</NameSurrogate>
+      <ModifiedTimestamp>2021-04-14.08:29:59.137</ModifiedTimestamp>
+      <ColNames>Attack</ColNames>
+      <DefaultExpression>0</DefaultExpression>
+    </default>
+    <default id="92" parent="58" name="DF__Player__Hp__2A4B4B5E">
+      <ObjectId>709577566</ObjectId>
+      <NameSurrogate>1</NameSurrogate>
+      <ModifiedTimestamp>2021-04-14.08:29:59.137</ModifiedTimestamp>
+      <ColNames>Hp</ColNames>
+      <DefaultExpression>0</DefaultExpression>
+    </default>
+    <default id="93" parent="58" name="DF__Player__Level__2B3F6F97">
+      <ObjectId>725577623</ObjectId>
+      <NameSurrogate>1</NameSurrogate>
+      <ModifiedTimestamp>2021-04-14.08:29:59.137</ModifiedTimestamp>
+      <ColNames>Level</ColNames>
+      <DefaultExpression>0</DefaultExpression>
+    </default>
+    <default id="94" parent="58" name="DF__Player__MaxHp__2C3393D0">
+      <ObjectId>741577680</ObjectId>
+      <NameSurrogate>1</NameSurrogate>
+      <ModifiedTimestamp>2021-04-14.08:29:59.137</ModifiedTimestamp>
+      <ColNames>MaxHp</ColNames>
+      <DefaultExpression>0</DefaultExpression>
+    </default>
+    <default id="95" parent="58" name="DF__Player__Speed__2D27B809">
+      <ObjectId>757577737</ObjectId>
+      <NameSurrogate>1</NameSurrogate>
+      <ModifiedTimestamp>2021-04-14.08:29:59.140</ModifiedTimestamp>
+      <ColNames>Speed</ColNames>
+      <DefaultExpression>CONVERT([real],0)</DefaultExpression>
+    </default>
+    <default id="96" parent="58" name="DF__Player__TotalExp__2E1BDC42">
+      <ObjectId>773577794</ObjectId>
+      <NameSurrogate>1</NameSurrogate>
+      <ModifiedTimestamp>2021-04-14.08:29:59.140</ModifiedTimestamp>
+      <ColNames>TotalExp</ColNames>
+      <DefaultExpression>0</DefaultExpression>
+    </default>
+    <column id="97" parent="59" name="MigrationId">
+      <Position>1</Position>
+      <DataType>nvarchar(150 char)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="98" parent="59" name="ProductVersion">
+      <Position>2</Position>
+      <DataType>nvarchar(32 char)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="99" parent="59" name="PK___EFMigrationsHistory">
+      <Position>1</Position>
+      <ColNames>MigrationId</ColNames>
+      <Clustering>1</Clustering>
+      <Unique>1</Unique>
+    </index>
+    <key id="100" parent="59" name="PK___EFMigrationsHistory">
+      <ObjectId>581577110</ObjectId>
+      <CreatedTimestamp>2021-04-14.08:29:58.980</CreatedTimestamp>
+      <ModifiedTimestamp>2021-04-14.08:29:58.980</ModifiedTimestamp>
+      <ColNames>MigrationId</ColNames>
+      <UnderlyingIndexName>PK___EFMigrationsHistory</UnderlyingIndexName>
+      <Primary>1</Primary>
+    </key>
   </database-model>
 </dataSource>

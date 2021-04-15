@@ -166,13 +166,9 @@ class PacketHandler
 			Item item = Item.MakeItem(itemInfo);
 			Managers.Inven.Add(item);
 		}
-
-		// UI 에서 표시
-		// UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-		// UI_Inventory invenUI = gameSceneUI.InvenUI;
-		//
-		// invenUI.gameObject.SetActive(true);
-		// invenUI.RefreshUI();
+		
+		if(Managers.Obj.MyPlayer != null)
+			Managers.Obj.MyPlayer.RefreshAdditionalStat();
 	}
 	
 	public static void S_AddItemHandler(PacketSession session, IMessage packet)
@@ -192,6 +188,9 @@ class PacketHandler
 		UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
 		UI_Inventory invenUI = gameSceneUI.InvenUI;
 		invenUI.RefreshUI();
+		
+		if(Managers.Obj.MyPlayer != null)
+			Managers.Obj.MyPlayer.RefreshAdditionalStat();
 	}
 	
 	public static void S_EquipItemHandler(PacketSession session, IMessage packet)
@@ -210,6 +209,9 @@ class PacketHandler
 		UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
 		UI_Inventory invenUI = gameSceneUI.InvenUI;
 		invenUI.RefreshUI();
+		
+		if(Managers.Obj.MyPlayer != null)
+			Managers.Obj.MyPlayer.RefreshAdditionalStat();
 	}
 	
 	public static void S_ChangeStatHandler(PacketSession session, IMessage packet)

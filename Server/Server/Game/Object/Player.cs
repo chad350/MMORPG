@@ -12,6 +12,12 @@ namespace Server.Game
         public ClientSession Session { get; set; }
         public Inventory Inven { get; private set; } = new Inventory();
 
+        public int WeaponDamage { get; private set; }
+        public int ArmorDefence { get; private set; }
+
+        public override int TotalAttack { get { return Stat.Attack + WeaponDamage; } }
+        public override int TotalDefence { get { return ArmorDefence; } }
+        
         public Player()
         {
             ObjectType = GameObjectType.Player;
@@ -58,6 +64,88 @@ namespace Server.Game
             // }
             
             DbTransaction.SavePlayerStatus_Step1(this, Room);
+        }
+
+        public void HandleEquipItem(C_EquipItem equipPacket)
+        {
+            Item item = Inven.Get(equipPacket.ItemDbId);
+            if(item == null)
+                return;
+            
+            if(item.ItemType == ItemType.Consumable)
+                return;
+
+            // 착용 요청일 때 기본 착용 아이템 해제 (같은 부위)
+            if (equipPacket.Equipped)
+            {
+                Item unequipItem = null;
+                // 무기라면
+                if (item.ItemType == ItemType.Weapon)
+                {
+                    // 무기이며 장착중인 아이템
+                    unequipItem = Inven.Find(i => i.Equipped && i.ItemType == ItemType.Weapon);
+                }
+                else if(item.ItemType == ItemType.Armor)
+                {
+                    // 방어구이며 장착중이고 부위가 일치하는 아이템 - ex) Armor, Helmet
+                    ArmorType armorType = ((Armor) item).ArmorType;
+                    unequipItem = Inven.Find(i => i.Equipped && i.ItemType == ItemType.Armor && ((Armor) item).ArmorType == armorType);
+                }
+
+                if (unequipItem != null)
+                {
+                    unequipItem.Equipped = false;
+            
+                    // DB 에 알려줌
+                    DbTransaction.EquipItemNoti(this, unequipItem);
+            
+                    // 클라에 통보
+                    S_EquipItem equipOkItem = new S_EquipItem();
+                    equipOkItem.ItemDbId = unequipItem.ItemDbId;
+                    equipOkItem.Equipped = unequipItem.Equipped;
+                    Session.Send(equipOkItem);
+                }
+            }
+
+            {
+                // 굳이 DB 에 데이터 적용이 햇심적인 부분이 아니라 그냥 메모리 에 먼저 적용하고 DB 에는 알려만 줌
+                // 메모리 선적용
+                item.Equipped = equipPacket.Equipped;
+            
+                // DB 에 알려줌
+                DbTransaction.EquipItemNoti(this, item);
+            
+                // 클라에 통보
+                S_EquipItem equipOkItem = new S_EquipItem();
+                equipOkItem.ItemDbId = equipPacket.ItemDbId;
+                equipOkItem.Equipped = equipPacket.Equipped;
+                Session.Send(equipOkItem);
+            }
+
+            RefreshAdditionalStat();
+        }
+
+        public void RefreshAdditionalStat()
+        {
+            WeaponDamage = 0;
+            ArmorDefence = 0;
+
+            foreach (Item item in Inven.Items.Values)
+            {
+                if(item.Equipped == false)
+                    continue;
+
+                switch (item.ItemType)
+                {
+                    case ItemType.Weapon:
+                        WeaponDamage += ((Weapon) item).Damage;
+                        break;
+                    
+                    case ItemType.Armor:
+                        ArmorDefence += ((Armor) item).Defence;
+                        break;
+                }
+            }
         }
     }
 }

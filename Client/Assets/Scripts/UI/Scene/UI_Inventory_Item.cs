@@ -26,6 +26,9 @@ public class UI_Inventory_Item : UI_Base
             Data.ItemData itemData = null;
             Managers.Data.ItemDict.TryGetValue(TemplateId, out itemData);
             
+            if(itemData == null)
+                return;
+            
             // 나중에 아이템 사용 패킷으로 변경
             if(itemData.itemType == ItemType.Consumable)
                 return;
@@ -41,6 +44,17 @@ public class UI_Inventory_Item : UI_Base
 
     public void SetItem(Item item)
     {
+        if (item == null)
+        {
+            ItemDbId = 0;
+            TemplateId = 0;
+            Count = 0;
+            Equipped = false;
+            
+            _icon.gameObject.SetActive(false);
+            _frame.gameObject.SetActive(false);
+        }
+
         ItemDbId = item.ItemDbId;
         TemplateId = item.TemplateId;
         Count = item.Count;
@@ -52,11 +66,7 @@ public class UI_Inventory_Item : UI_Base
         Sprite icon = Managers.Resource.Load<Sprite>(itemData.iconPath);
         _icon.sprite = icon;
 
-        RefreshEquipped();
-    }
-
-    private void RefreshEquipped()
-    {
+        _icon.gameObject.SetActive(true);
         _frame.gameObject.SetActive(Equipped);
     }
 }

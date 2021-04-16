@@ -89,7 +89,7 @@ namespace Server.Game
                 {
                     // 방어구이며 장착중이고 부위가 일치하는 아이템 - ex) Armor, Helmet
                     ArmorType armorType = ((Armor) item).ArmorType;
-                    unequipItem = Inven.Find(i => i.Equipped && i.ItemType == ItemType.Armor && ((Armor) item).ArmorType == armorType);
+                    unequipItem = Inven.Find(i => i.Equipped && i.ItemType == ItemType.Armor && ((Armor) i).ArmorType == armorType);
                 }
 
                 if (unequipItem != null)

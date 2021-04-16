@@ -102,21 +102,25 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 			
-			// GameLogicTask
+			// DbTask
 			{
-				Task gameLogicTask = new Task(GameLogicTask, TaskCreationOptions.LongRunning);
-				gameLogicTask.Start();
+				// thread 를 만드나 task 를 Long Running 으로 하나 별 차이는 없다
+				Thread t_Db = new Thread(DbTask);
+				t_Db.Name = "DB";
+				t_Db.Start();
 			}
 
 			// NetworkTask
 			{
-				Task networkTask = new Task(NetworkTask, TaskCreationOptions.LongRunning);
-				networkTask.Start();
+				Thread t_Network = new Thread(NetworkTask);
+				t_Network.Name = "Network";
+				t_Network.Start();
 			}
 			
-			// DbTask
+			// GameLogicTask
 			{
-				DbTask();
+				Thread.CurrentThread.Name = "GameLogic";
+				GameLogicTask();
 			}
 
 

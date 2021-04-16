@@ -21,7 +21,11 @@ namespace Server
 		public Player MyPlayer { get; set; }
 		public int SessionId { get; set; }
 
+		private object _lock = new object();
+		private List<ArraySegment<byte>> _reserveQueue = new List<ArraySegment<byte>>();
+		
 		#region Network
+		// 요청을 예약만 한다.
 		public void Send(IMessage packet)
 		{
 			string msgName = packet.Descriptor.Name.Replace("_", String.Empty);
@@ -33,9 +37,37 @@ namespace Server
 			Array.Copy(BitConverter.GetBytes((ushort)msgId), 0, sendBuff, 2, sizeof(ushort)); // 프로토콜의 아이디
 			Array.Copy(packet.ToByteArray(), 0, sendBuff, 4, size); // 전달하려는 데이터
 			
-			Send(new ArraySegment<byte>(sendBuff));
+			// Send 는 부하가 상당히 큰 작업
+			// 데이터를 전송할 떄 컨텍스트 스위칭이 일어난다.
+			// GameLogic Update -> Room Send 로 실행되는 이 부분이 부하가 크면 앞의 로직들이 문제가 생길 수 있다. 
+			// Send(new ArraySegment<byte>(sendBuff));
+			
+			// 직접 호출하지 않고 실행을 위임
+			lock (_lock)
+			{
+				_reserveQueue.Add(sendBuff);	
+			}
 		}
-		
+
+		// 예약된 요청을 실제로 실행한다.
+		public void FlushSend()
+		{
+			List<ArraySegment<byte>> sendList = null;
+			// 락을 걸고 데이터를 보내면 Flush 가 다 처리되기전엔 새로운 요청을 받을 수 없다
+			// 락을 걸고 전송할 데이터만 새로 뽑아온 뒤 기존 요청은 초기화
+			// 이후 락을 빠져 나온 뒤 Send 를 실행한다.
+			lock (_lock)
+			{
+				if(_reserveQueue.Count == 0)
+					return;
+				
+				sendList = _reserveQueue;
+				_reserveQueue = new List<ArraySegment<byte>>();
+			}
+			
+			Send(sendList);
+		}
+
 		public override void OnConnected(EndPoint endPoint)
 		{
 			Console.WriteLine($"OnConnected : {endPoint}");
@@ -53,9 +85,12 @@ namespace Server
 
 		public override void OnDisconnected(EndPoint endPoint)
 		{
-			GameRoom room = RoomManager.Instance.Find(1);
-			room.JobQ.Push(room.LeaveGame, MyPlayer.info.ObjectId);
-			
+			GameLogic.Instance.JobQ.Push(() =>
+			{
+				GameRoom room = GameLogic.Instance.Find(1);
+				room.JobQ.Push(room.LeaveGame, MyPlayer.info.ObjectId); 
+			});
+
 			SessionManager.Instance.Remove(this);
 
 			Console.WriteLine($"OnDisconnected : {endPoint}");

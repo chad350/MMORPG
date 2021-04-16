@@ -31,11 +31,6 @@ namespace Server.Game
         
         public void Update()
         {
-            foreach (Monster monster in _monsters.Values)
-            {
-                monster.Update();
-            }
-            
             JobQ.Flush();
         }
 
@@ -85,6 +80,8 @@ namespace Server.Game
                 monster.Room = this;
                 
                 Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
+                
+                monster.Update();
             }
             else if (type == GameObjectType.Projectile)
             {
@@ -177,7 +174,11 @@ namespace Server.Game
         public void Broadcast(IMessage packet)
         {
             foreach (Player p in _players.Values)
+            {
+                // Send 는 부하가 상당히 큰 작업
+                // 데이터를 전송할 떄 컨텍스트 스위칭이 일어난다.
                 p.Session.Send(packet);
+            }
         }
     }
 }

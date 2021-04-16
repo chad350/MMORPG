@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.DB;
@@ -27,6 +28,7 @@ namespace Server.Game
         }
 
         // FSM (Finite State Machine)
+        private IJob _job;
         public override void Update()
         {
             switch (State)
@@ -44,6 +46,10 @@ namespace Server.Game
                     UpdateDead();
                     break;
             }
+            
+            // 5프레임 (0.2초마다 한번씩 Update)
+            if(Room != null)
+                _job = Room.JobQ.PushAfter(200, Update);
         }
 
         private Player _target;
@@ -195,6 +201,12 @@ namespace Server.Game
 
         public override void OnDead(GameObject attacker)
         {
+            if (_job != null)
+            {
+                _job.Cancel = true;
+                _job = null;
+            }
+            
             base.OnDead(attacker);
             GameObject owner = attacker.GetOwner();
             

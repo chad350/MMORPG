@@ -108,8 +108,8 @@ class PacketHandler
 		
 		// 시스템에 따라 얻을수 있는 유니크 키
 		// 나중에 같은 기기에서 여러 계정을 사용하면 문제가 될 수 있다.
-		loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
-		
+		string path = Application.dataPath;
+		loginPacket.UniqueId = path.GetHashCode().ToString();
 		Managers.Network.Send(loginPacket);
 	}
 	

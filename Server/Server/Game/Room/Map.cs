@@ -184,6 +184,21 @@ namespace Server.Game
 			    _objects[y, x] = gameObject;
 		    }
 
+		    // Zone check
+		    Player p = gameObject as Player;
+		    if (p != null)
+		    {
+			    Zone nowZone = gameObject.Room.GetZone(gameObject.CellPos);
+			    Zone afterZone = gameObject.Room.GetZone(dest);
+			    if (nowZone != afterZone)
+			    {
+				    if(nowZone != null)
+						nowZone.Players.Remove(p);
+				    if(afterZone != null)
+						afterZone.Players.Add(p);
+			    }
+		    }
+
 		    // 실제 좌표 이동
 		    posInfo.PoxX = dest.x;
 		    posInfo.PoxY = dest.y;

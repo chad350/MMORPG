@@ -122,7 +122,7 @@ namespace Server.Game
             S_ChangeHp changePacket = new S_ChangeHp();
             changePacket.ObjectId = Id;
             changePacket.Hp = Stat.Hp;
-            Room.Broadcast(changePacket);
+            Room.Broadcast(CellPos, changePacket);
             
             if (Stat.Hp <= 0)
                 OnDead(attacker);
@@ -136,7 +136,7 @@ namespace Server.Game
             S_Die diePacket = new S_Die();
             diePacket.ObjectId = Id;
             diePacket.AttackerId = attacker.Id;
-            Room.Broadcast(diePacket);
+            Room.Broadcast(CellPos, diePacket);
 
             // 아래 LeaveGame, EnterGame 을 실행하는 부분은 순차대로 실행될거라 예상된 로직이므로 순차적으로 실행되지 않으면
             // 정보가 가르게 업데이트 되어 혼란이 일어 날수 있다.

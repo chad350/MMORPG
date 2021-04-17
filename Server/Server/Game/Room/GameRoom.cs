@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Transactions;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
@@ -16,12 +18,47 @@ namespace Server.Game
         private Dictionary<int, Monster> _monsters = new Dictionary<int, Monster>();
         private Dictionary<int, Projectile> _projectiles = new Dictionary<int, Projectile>();
 
+        public Zone[,] Zones { get; private set; }
+        public int ZoneCells { get; private set; }
+
         public Map Map { get; private set; } = new Map();
 
-        public void Init(int mapId)
+        public Zone GetZone(Vector2Int cellPos)
+        {
+            int x = (cellPos.x - Map.MinX) / ZoneCells;
+            int y = (Map.MaxY - cellPos.y) / ZoneCells;
+
+            // 2중 배열의 GetLength(int dimension)
+            // dimension : 0 = 1차원  Zones[y, x] : y의 크기
+            // dimension : 1 = 2차원  Zones[y, x] : x의 크기
+            if (x < 0 || x >= Zones.GetLength(1))
+                return null;
+            if (y < 0 || y >= Zones.GetLength(0))
+                return null;
+            
+            return Zones[y, x];
+        }
+
+        public void Init(int mapId, int zoneCells)
         {
             Map.LoadMap(mapId);
 
+            // Zone Init
+            ZoneCells = zoneCells; // 10
+            // 1 ~ 10 칸 = 1 존
+            // 11 ~ 20칸 = 2존
+            // 21 ~ 30칸 = 3존
+            int countY = (Map.SizeY + zoneCells - 1) / zoneCells;
+            int countX = (Map.SizeX + zoneCells - 1) / zoneCells;
+            Zones = new Zone[countY, countX];
+            for (int y = 0; y < countY; y++)
+            {
+                for (int x = 0; x < countX; x++)
+                {
+                    Zones[y, x] = new Zone(y, x);
+                }
+            }
+            
             Monster monster = ObjectManager.Instance.Add<Monster>();
             monster.Init(1);
             
@@ -50,6 +87,7 @@ namespace Server.Game
                 player.RefreshAdditionalStat();
                 
                 Map.ApplyMove(player, new Vector2Int(player.CellPos.x, player.CellPos.y));
+                GetZone(player.CellPos).Players.Add(player);
                 
                 // 본인한테 정보 전송
                 {
@@ -115,6 +153,8 @@ namespace Server.Game
                 if(_players.Remove(objectId, out player) == false)
                     return;
                 
+                GetZone(player.CellPos).Players.Remove(player);
+                
                 player.OnLeaveGame();
                 Map.ApplyLeave(player);
                 player.Room = null;
@@ -171,14 +211,43 @@ namespace Server.Game
         }
 
         // 마찬가지로 Broadcast를 호출되는 부분은 다 JobQ로 관리되는 곳에서 호출한다. 
-        public void Broadcast(IMessage packet)
+        public void Broadcast(Vector2Int pos, IMessage packet)
         {
-            foreach (Player p in _players.Values)
+            List<Zone> zones = GetAdjacentZones(pos);
+            // foreach (var zone in zones)
+            // {
+            //     foreach (Player p in zone.Players)
+            //     {
+            //         p.Session.Send(packet);
+            //     }
+            // }
+
+            foreach (Player p in zones.SelectMany(z => z.Players))
             {
                 // Send 는 부하가 상당히 큰 작업
                 // 데이터를 전송할 떄 컨텍스트 스위칭이 일어난다.
                 p.Session.Send(packet);
             }
+        }
+
+        public List<Zone> GetAdjacentZones(Vector2Int cellPos, int cells = 5)
+        {
+            HashSet<Zone> zones = new HashSet<Zone>();
+            int[] delta = new int[2] {-cells, +cells};
+            foreach (int dy in delta)
+            {
+                foreach (int dx in delta)
+                {
+                    int y = cellPos.y + dy;
+                    int x = cellPos.x + dx;
+                    Zone zone = GetZone(new Vector2Int(x, y));
+                    if(zone == null)
+                        continue;
+                    zones.Add(zone);
+                }   
+            }
+
+            return zones.ToList();
         }
     }
 }

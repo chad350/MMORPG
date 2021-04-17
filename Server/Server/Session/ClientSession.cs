@@ -87,6 +87,9 @@ namespace Server
 		{
 			GameLogic.Instance.JobQ.Push(() =>
 			{
+				if(MyPlayer == null)
+					return;
+				
 				GameRoom room = GameLogic.Instance.Find(1);
 				room.JobQ.Push(room.LeaveGame, MyPlayer.info.ObjectId); 
 			});

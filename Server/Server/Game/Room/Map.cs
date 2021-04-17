@@ -277,7 +277,7 @@ namespace Server.Game
 		int[] _deltaX = new int[] { 0, 0, -1, 1 };
 		int[] _cost = new int[] { 10, 10, 10, 10 };
 
-		public List<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObjects = true)
+		public List<Vector2Int> FindPath(Vector2Int startCellPos, Vector2Int destCellPos, bool checkObjects = true, int maxDist = 10)
 		{
 			List<Pos> path = new List<Pos>();
 
@@ -332,6 +332,10 @@ namespace Server.Game
 				{
 					Pos next = new Pos(node.Y + _deltaY[i], node.X + _deltaX[i]);
 
+					// 너무 멀면 스킵
+					if(Math.Abs(pos.Y - next.Y) + Math.Abs(pos.X - next.X) > maxDist)
+						continue;
+					
 					// 유효 범위를 벗어났으면 스킵
 					// 벽으로 막혀서 갈 수 없으면 스킵
 					if (next.Y != dest.Y || next.X != dest.X)
@@ -374,19 +378,37 @@ namespace Server.Game
 		{
 			List<Vector2Int> cells = new List<Vector2Int>();
 
+			// 목적지가 막혀있으면 차선택 찾기
+			// 사실 A* 순회할 떄 찾아두는게 좋다
 			if (parent.ContainsKey(dest) == false)
 			{
-				return cells;
+				Pos best = new Pos();
+				int bestDist = Int32.MaxValue;
+
+				foreach (Pos pos in parent.Keys)
+				{
+					int dist = Math.Abs(dest.X - pos.X) + Math.Abs(dest.Y - pos.Y);
+					// 제일 우수한 후보를 뽑는다
+					if (dist < bestDist)
+					{
+						best = pos;
+						bestDist = dist;
+					}
+				}
+
+				dest = best;
 			}
 
-			Pos pos = dest;
-			while (parent[pos] != pos)
 			{
+				Pos pos = dest;
+				while (parent[pos] != pos)
+				{
+					cells.Add(Pos2Cell(pos));
+					pos = parent[pos];
+				}
 				cells.Add(Pos2Cell(pos));
-				pos = parent[pos];
+				cells.Reverse();
 			}
-			cells.Add(Pos2Cell(pos));
-			cells.Reverse();
 
 			return cells;
 		}

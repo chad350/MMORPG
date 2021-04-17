@@ -17,7 +17,7 @@ namespace Server.Game
             Room.JobQ.PushAfter(tick, Update);
 
             Vector2Int destPos = GetFrontCellPos();
-            if (Room.Map.ApplyMove(this, destPos, checkObjects:false))
+            if (Room.Map.ApplyMove(this, destPos, checkColls:false))
             {
                 S_Move movePacket = new S_Move();
                 movePacket.ObjectId = Id;

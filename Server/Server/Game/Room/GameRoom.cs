@@ -61,10 +61,13 @@ namespace Server.Game
                     Zones[y, x] = new Zone(y, x);
                 }
             }
-            
-            Monster monster = ObjectManager.Instance.Add<Monster>();
-            monster.Init(1);
-            EnterGame(monster);
+
+            for (int i = 0; i < 50; i++)
+            {
+                Monster monster = ObjectManager.Instance.Add<Monster>();
+                monster.Init(1);
+                EnterGame(monster);   
+            }
         }
         
         public void Update()

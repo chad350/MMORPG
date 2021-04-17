@@ -30,16 +30,20 @@ namespace Server.Game
         {
             int x = (cellPos.x - Map.MinX) / ZoneCells;
             int y = (Map.MaxY - cellPos.y) / ZoneCells;
+            return GetZone(y, x);
+        }
 
+        public Zone GetZone(int indexY, int indexX)
+        {
             // 2중 배열의 GetLength(int dimension)
             // dimension : 0 = 1차원  Zones[y, x] : y의 크기
             // dimension : 1 = 2차원  Zones[y, x] : x의 크기
-            if (x < 0 || x >= Zones.GetLength(1))
+            if (indexY < 0 || indexX >= Zones.GetLength(1))
                 return null;
-            if (y < 0 || y >= Zones.GetLength(0))
+            if (indexX < 0 || indexY >= Zones.GetLength(0))
                 return null;
             
-            return Zones[y, x];
+            return Zones[indexY, indexX];
         }
 
         public void Init(int mapId, int zoneCells)
@@ -62,7 +66,7 @@ namespace Server.Game
                 }
             }
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 500; i++)
             {
                 Monster monster = ObjectManager.Instance.Add<Monster>();
                 monster.Init(1);
@@ -208,7 +212,7 @@ namespace Server.Game
         // Update 에서 실행되는 함수
         // Update는 이미 JobQ 에서 관리 되기 때문에 이 부분은 잡큐에 등록하지 않아도 된다.
         // 만약 호출하는 곳에서도 JobQ 에 있지 않다면 문제가 생길것
-        public Player FindPlayer(Func<GameObject, bool> condition)
+        Player FindPlayer(Func<GameObject, bool> condition)
         {
             foreach (Player player in _players.Values)
             {
@@ -216,6 +220,30 @@ namespace Server.Game
                     return player;
             }
 
+            return null;
+        }
+        
+        // 부하가 걸리는 함수
+        public Player FindClosestPlayer(Vector2Int pos, int range)
+        {
+            List<Player> players = GetAdjacentPlayer(pos, range);
+            
+            players.Sort((left, right) =>
+            {
+                int leftDist = (left.CellPos - pos).cellDistFromZero;
+                int rightDist = (right.CellPos - pos).cellDistFromZero;
+                return leftDist - rightDist;
+            });
+
+            foreach (var player in players)
+            {
+                List<Vector2Int> path = Map.FindPath(pos, player.CellPos, true);
+                if (path.Count < 2 || path.Count > range)
+                    continue;
+                
+                return player;
+            }
+            
             return null;
         }
 
@@ -246,10 +274,44 @@ namespace Server.Game
             }
         }
 
-        public List<Zone> GetAdjacentZones(Vector2Int cellPos, int cells = VisionCells)
+        public List<Player> GetAdjacentPlayer(Vector2Int pos, int range)
+        {
+            List<Zone> zones = GetAdjacentZones(pos, range);
+            return zones.SelectMany(z => z.Players).ToList();
+        }
+
+        public List<Zone> GetAdjacentZones(Vector2Int cellPos, int range = VisionCells)
         {
             HashSet<Zone> zones = new HashSet<Zone>();
-            int[] delta = new int[2] {-cells, +cells};
+
+            int maxY = cellPos.y + range;
+            int minY = cellPos.y - range;
+            int maxX = cellPos.x + range;
+            int minX = cellPos.x - range;
+            
+            // 좌측 상단
+            Vector2Int leftTop = new Vector2Int(minX, maxY);
+            int minIndexY = (Map.MaxY - leftTop.y) / ZoneCells;
+            int minIndexX = (leftTop.x - Map.MinX) / ZoneCells;
+
+            // 우측 하단
+            Vector2Int rightBot = new Vector2Int(maxX, minY);
+            int maxIndexY = (Map.MaxY - rightBot.y) / ZoneCells;
+            int maxIndexX = (rightBot.x - Map.MinX) / ZoneCells;
+
+            for (int x = minIndexX; x <= maxIndexX; x++)
+            {
+                for (int y = minIndexY; y <= maxIndexY; y++)
+                {
+                    Zone zone = GetZone(y, x);
+                    if(zone == null)
+                        continue;
+
+                    zones.Add(zone);
+                }
+            }
+            
+            int[] delta = new int[2] {-range, +range};
             foreach (int dy in delta)
             {
                 foreach (int dx in delta)

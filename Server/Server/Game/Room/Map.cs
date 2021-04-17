@@ -373,7 +373,12 @@ namespace Server.Game
 		List<Vector2Int> CalcCellPathFromParent(Dictionary<Pos, Pos> parent, Pos dest)
 		{
 			List<Vector2Int> cells = new List<Vector2Int>();
-			
+
+			if (parent.ContainsKey(dest) == false)
+			{
+				return cells;
+			}
+
 			Pos pos = dest;
 			while (parent[pos] != pos)
 			{

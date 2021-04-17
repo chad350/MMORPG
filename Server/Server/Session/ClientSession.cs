@@ -24,6 +24,10 @@ namespace Server
 		private object _lock = new object();
 		private List<ArraySegment<byte>> _reserveQueue = new List<ArraySegment<byte>>();
 
+		// 패킷 모아 보내기
+		private int _reservedSendBytes = 0;
+		private long _lastSendTick = 0;
+		
 		#region Ping Pong
 
 		private long _pingpongTick = 0;
@@ -75,7 +79,8 @@ namespace Server
 			// 직접 호출하지 않고 실행을 위임
 			lock (_lock)
 			{
-				_reserveQueue.Add(sendBuff);	
+				_reserveQueue.Add(sendBuff);
+				_reservedSendBytes += sendBuff.Length;
 			}
 		}
 
@@ -88,8 +93,14 @@ namespace Server
 			// 이후 락을 빠져 나온 뒤 Send 를 실행한다.
 			lock (_lock)
 			{
-				if(_reserveQueue.Count == 0)
+				// 0.1초가 지났거나 패킷이 너무 낳이 모일때
+				long delta = (Environment.TickCount64 - _lastSendTick);
+				if(delta < 100 && _reservedSendBytes < 10000)
 					return;
+					
+				// 패킷 모아 보내기
+				_reservedSendBytes = 0;
+				_lastSendTick = Environment.TickCount64;
 				
 				sendList = _reserveQueue;
 				_reserveQueue = new List<ArraySegment<byte>>();
@@ -100,8 +111,6 @@ namespace Server
 
 		public override void OnConnected(EndPoint endPoint)
 		{
-			Console.WriteLine($"OnConnected : {endPoint}");
-
 			{
 				S_Connected connectedPacket = new S_Connected();
 				Send(connectedPacket);
@@ -127,8 +136,6 @@ namespace Server
 			});
 
 			SessionManager.Instance.Remove(this);
-
-			Console.WriteLine($"OnDisconnected : {endPoint}");
 		}
 
 		public override void OnSend(int numOfBytes)

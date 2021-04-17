@@ -23,6 +23,36 @@ namespace Server
 
 		private object _lock = new object();
 		private List<ArraySegment<byte>> _reserveQueue = new List<ArraySegment<byte>>();
+
+		#region Ping Pong
+
+		private long _pingpongTick = 0;
+
+		public void Ping()
+		{
+			if (_pingpongTick > 0)
+			{
+				long delta = (Environment.TickCount64 - _pingpongTick);
+				if (delta > 30 * 1000)
+				{
+					Console.WriteLine("Disconnected by PingCheck");
+					Disconnect();
+					return;
+				}
+			}
+
+			S_Ping pingPacket = new S_Ping();
+			Send(pingPacket);
+
+			GameLogic.Instance.JobQ.PushAfter(5000, Ping);
+		}
+
+		public void HandlePong()
+		{
+			_pingpongTick = Environment.TickCount64;
+		}
+		
+		#endregion
 		
 		#region Network
 		// 요청을 예약만 한다.
@@ -76,6 +106,8 @@ namespace Server
 				S_Connected connectedPacket = new S_Connected();
 				Send(connectedPacket);
 			}
+
+			GameLogic.Instance.JobQ.PushAfter(5000, Ping);
 		}
 
 		public override void OnRecvPacket(ArraySegment<byte> buffer)

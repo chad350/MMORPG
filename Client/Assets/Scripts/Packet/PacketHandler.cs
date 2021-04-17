@@ -218,5 +218,12 @@ class PacketHandler
 	{
 		S_ChangeStat changeStatePacket = packet as S_ChangeStat;
 	}
+	
+	public static void S_PingHandler(PacketSession session, IMessage packet)
+	{
+		C_Pong pingPacket = new C_Pong();
+		Debug.Log("[server] ping pong~");
+		Managers.Network.Send(pingPacket);
+	}
 }
 

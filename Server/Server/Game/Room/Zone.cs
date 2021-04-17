@@ -9,6 +9,8 @@ namespace Server.Game
         public int IndexX { get; private set; }
 
         public HashSet<Player> Players { get; set; } = new HashSet<Player>();
+        public HashSet<Monster> Monsters { get; set; } = new HashSet<Monster>();
+        public HashSet<Projectile> Projectiles { get; set; } = new HashSet<Projectile>();
 
         public Zone(int y, int x)
         {
@@ -16,7 +18,7 @@ namespace Server.Game
             IndexX = x;
         }
 
-        public Player FindOne(Func<Player, bool> condition)
+        public Player FindOnePlayer(Func<Player, bool> condition)
         {
             foreach (var player in Players)
             {
@@ -27,7 +29,7 @@ namespace Server.Game
             return null;
         }
         
-        public List<Player> FindAll(Func<Player, bool> condition)
+        public List<Player> FindAllPlayer(Func<Player, bool> condition)
         {
             List<Player> findList = new List<Player>();
             

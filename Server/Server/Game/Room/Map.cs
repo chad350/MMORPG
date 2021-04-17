@@ -185,19 +185,47 @@ namespace Server.Game
 		    }
 
 		    // Zone check
-		    Player p = gameObject as Player;
-		    if (p != null)
+		    GameObjectType type = ObjectManager.GetObjectTypeById(gameObject.Id);
+
+		    if (type == GameObjectType.Player)
 		    {
+			    Player player = (Player)gameObject;
+
 			    Zone nowZone = gameObject.Room.GetZone(gameObject.CellPos);
 			    Zone afterZone = gameObject.Room.GetZone(dest);
 			    if (nowZone != afterZone)
 			    {
-				    if(nowZone != null)
-						nowZone.Players.Remove(p);
-				    if(afterZone != null)
-						afterZone.Players.Add(p);
+				    nowZone.Players.Remove(player);
+				    afterZone.Players.Add(player);
 			    }
 		    }
+		    else if (type == GameObjectType.Monster)
+		    {
+			    Monster monster = (Monster)gameObject;
+
+			    Zone nowZone = gameObject.Room.GetZone(gameObject.CellPos);
+			    Zone afterZone = gameObject.Room.GetZone(dest);
+			    if (nowZone != afterZone)
+			    {
+				    nowZone.Monsters.Remove(monster);
+				    afterZone.Monsters.Add(monster);
+			    }
+		    }
+		    else if (type == GameObjectType.Projectile)
+		    {
+			    Projectile projectile = (Projectile)gameObject;
+
+			    Zone nowZone = gameObject.Room.GetZone(gameObject.CellPos);
+			    Zone afterZone = gameObject.Room.GetZone(dest);
+			    if (nowZone != afterZone)
+			    {
+				    nowZone.Projectiles.Remove(projectile);
+				    afterZone.Projectiles.Add(projectile);
+			    }
+		    }
+
+		    
+		    
 
 		    // 실제 좌표 이동
 		    posInfo.PoxX = dest.x;

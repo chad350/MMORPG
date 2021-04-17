@@ -12,6 +12,9 @@ namespace Server.Game
     {
         // 잡에 푸시해서 사용하는 경우는 리턴값을 받지 않는다.
         public JobSerializer JobQ = new JobSerializer();
+
+        public const int VisionCells = 5;
+        
         public int RoomId { get; set; }
 
         private Dictionary<int, Player> _players = new Dictionary<int, Player>();
@@ -95,20 +98,7 @@ namespace Server.Game
                     enterPacket.Player = player.info;
                     player.Session.Send(enterPacket);
             
-                    S_Spawn spawnPacket = new S_Spawn();
-                    foreach (Player p in _players.Values)
-                    {
-                        if(player != p)
-                            spawnPacket.Objects.Add(p.info);
-                    }
-                    
-                    foreach (Monster m in _monsters.Values)
-                        spawnPacket.Objects.Add(m.info);
-                    
-                    foreach (Projectile p in _projectiles.Values)
-                        spawnPacket.Objects.Add(p.info);
-
-                    player.Session.Send(spawnPacket);
+                    player.Vision.Update();
                 }
             }
             else if (type == GameObjectType.Monster)
@@ -117,6 +107,7 @@ namespace Server.Game
                 _monsters.Add(gameObject.Id, monster);
                 monster.Room = this;
                 
+                GetZone(monster.CellPos).Monsters.Add(monster);
                 Map.ApplyMove(monster, new Vector2Int(monster.CellPos.x, monster.CellPos.y));
                 
                 monster.Update();
@@ -127,19 +118,8 @@ namespace Server.Game
                 _projectiles.Add(gameObject.Id, projectile);
                 projectile.Room = this;
 
+                GetZone(projectile.CellPos).Projectiles.Add(projectile);
                 projectile.Update();
-            }
-
-
-            // 타인한테 정보 전송
-            {
-                S_Spawn spawnPacket = new S_Spawn();
-                spawnPacket.Objects.Add(gameObject.info);
-                foreach (Player p in _players.Values)
-                {
-                    if(gameObject.Id != p.Id)
-                        p.Session.Send(spawnPacket);
-                }
             }
         }
         
@@ -171,6 +151,7 @@ namespace Server.Game
                 if(_monsters.Remove(objectId, out monster) == false)
                     return;
             
+                GetZone(monster.CellPos).Monsters.Remove(monster);
                 Map.ApplyLeave(monster);
                 monster.Room = null;
             }
@@ -180,19 +161,8 @@ namespace Server.Game
                 if(_projectiles.Remove(objectId, out projectile) == false)
                     return;
             
+                GetZone(projectile.CellPos).Projectiles.Remove(projectile);
                 projectile.Room = null;
-            }
-            
-            
-            // 타인한테 정보 전송
-            {
-                S_Despawn despawnPacket = new S_Despawn();
-                despawnPacket.ObjectIds.Add(objectId);
-                foreach (Player p in _players.Values)
-                {
-                    if(objectId != p.Id)
-                        p.Session.Send(despawnPacket);
-                }
             }
         }
 
@@ -224,13 +194,20 @@ namespace Server.Game
 
             foreach (Player p in zones.SelectMany(z => z.Players))
             {
+                int dx = p.CellPos.x - pos.x;
+                int dy = p.CellPos.y - pos.y;
+                if(Math.Abs(dx) > GameRoom.VisionCells)
+                    continue;
+                if(Math.Abs(dy) > GameRoom.VisionCells)
+                    continue;
+                
                 // Send 는 부하가 상당히 큰 작업
                 // 데이터를 전송할 떄 컨텍스트 스위칭이 일어난다.
                 p.Session.Send(packet);
             }
         }
 
-        public List<Zone> GetAdjacentZones(Vector2Int cellPos, int cells = 5)
+        public List<Zone> GetAdjacentZones(Vector2Int cellPos, int cells = VisionCells)
         {
             HashSet<Zone> zones = new HashSet<Zone>();
             int[] delta = new int[2] {-cells, +cells};

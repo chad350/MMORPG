@@ -89,7 +89,7 @@ namespace Server.Game
                     arrow.PosInfo.PoxY = player.PosInfo.PoxY;
                     arrow.Speed = skillData.projectile.speed;
                     
-                    JobQ.Push(EnterGame, arrow);
+                    JobQ.Push(EnterGame, arrow, false);
                     break;
             }
         }

@@ -149,10 +149,8 @@ namespace Server.Game
             Stat.Hp = Stat.MaxHp;
             PosInfo.State = CreatureState.Idle;
             PosInfo.MoveDir = MoveDir.Down;
-            PosInfo.PoxX = 0;
-            PosInfo.PoxY = 0;
 
-            room.EnterGame(this); // 이 부분
+            room.EnterGame(this, randomPos:true); // 이 부분
         }
 
         public virtual GameObject GetOwner()

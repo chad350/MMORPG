@@ -156,12 +156,16 @@ namespace Server.Game
 		    if (CheckMapBound(gameObject) == false)
 			    return false;
 		    
+		    // Zone
+		    Zone zone = gameObject.Room.GetZone(gameObject.CellPos);
+		    zone.Remove(gameObject);
+		    
 		    ResetObjectPosFromMap(gameObject);
 		    
 		    return true;
 	    }
 	    
-	    public bool ApplyMove(GameObject gameObject, Vector2Int dest)
+	    public bool ApplyMove(GameObject gameObject, Vector2Int dest, bool checkObjects = true, bool checkColls = true)
 	    {
 		    if (gameObject.Room == null)
 			    return false;
@@ -170,14 +174,15 @@ namespace Server.Game
 		    
 		    if (CheckMapBound(gameObject) == false)
 			    return false;
-		    
-		    ResetObjectPosFromMap(gameObject);
-		    
+
 		    PositionInfo posInfo = gameObject.info.PosInfo;
-		    if (CanGo(dest, true) == false)
+		    if (CanGo(dest, checkObjects) == false)
 			    return false;
 
+		    if(checkColls)
 		    {
+			    ResetObjectPosFromMap(gameObject);
+			    
 			    // 플레이어 위치 갱신
 			    int x = dest.x - MinX;
 			    int y = MaxY - dest.y;

@@ -212,7 +212,7 @@ namespace Server
             GameLogic.Instance.JobQ.Push(() =>
             {
                 GameRoom room = GameLogic.Instance.Find(1);
-                room.JobQ.Push(room.EnterGame, MyPlayer); 
+                room.JobQ.Push(room.EnterGame, MyPlayer, true); 
             });
         }
     }

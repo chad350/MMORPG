@@ -5,7 +5,7 @@ using UnityEngine;
 public class Managers : MonoBehaviour
 {
     static Managers s_instance; // 유일성이 보장된다
-    static Managers Instance { get { Init(); return s_instance; } } // 유일한 매니저를 갖고온다
+    public static Managers Instance { get { Init(); return s_instance; } } // 유일한 매니저를 갖고온다
 
 	#region Contents
 	private InventoryManager _inven = new InventoryManager();
@@ -36,6 +36,12 @@ public class Managers : MonoBehaviour
 		get { return Instance._network; }
 	}
 	
+	private WebManager _web = new WebManager();
+
+	public static WebManager Web
+	{
+		get { return Instance._web; }
+	}
 	#endregion
 
 	#region Core

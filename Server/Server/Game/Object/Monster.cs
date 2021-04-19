@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.DB;
@@ -27,6 +28,7 @@ namespace Server.Game
         }
 
         // FSM (Finite State Machine)
+        private IJob _job;
         public override void Update()
         {
             switch (State)
@@ -44,6 +46,10 @@ namespace Server.Game
                     UpdateDead();
                     break;
             }
+            
+            // 5프레임 (0.2초마다 한번씩 Update)
+            if(Room != null)
+                _job = Room.JobQ.PushAfter(200, Update);
         }
 
         private Player _target;
@@ -58,11 +64,7 @@ namespace Server.Game
 
             _nextSearchTick = Environment.TickCount64 + 1000;
 
-            Player target = Room.FindPlayer(p =>
-            {
-                Vector2Int dir = p.CellPos - CellPos;
-                return dir.cellDistFromZero <= _searchCellDist;
-            });
+            Player target = Room.FindClosestPlayer(CellPos, _searchCellDist);
             
             if(target == null)
                 return;
@@ -99,7 +101,7 @@ namespace Server.Game
                 return;
             }
 
-            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, false);
+            List<Vector2Int> path = Room.Map.FindPath(CellPos, _target.CellPos, true);
             if (path.Count < 2 || path.Count > _chaseCellDist)
             {
                 _target = null;
@@ -129,7 +131,7 @@ namespace Server.Game
             S_Move movePacket = new S_Move();
             movePacket.ObjectId = Id;
             movePacket.PosInfo = PosInfo;
-            Room.Broadcast(movePacket);
+            Room.Broadcast(CellPos, movePacket);
         }
 
         private long _coolTick = 0;
@@ -176,7 +178,7 @@ namespace Server.Game
                 S_Skill skill = new S_Skill() {Info = new SkillInfo()};
                 skill.ObjectId = Id;
                 skill.Info.SkillId = skillData.id;
-                Room.Broadcast(skill);
+                Room.Broadcast(CellPos, skill);
 
                 // 스킬 쿨타임 적용
                 int coolTick = (int) (1000 * skillData.colldown);
@@ -195,6 +197,12 @@ namespace Server.Game
 
         public override void OnDead(GameObject attacker)
         {
+            if (_job != null)
+            {
+                _job.Cancel = true;
+                _job = null;
+            }
+            
             base.OnDead(attacker);
             GameObject owner = attacker.GetOwner();
             

@@ -37,7 +37,7 @@ namespace Server.Game
             resMovePacket.ObjectId = player.info.ObjectId;
             resMovePacket.PosInfo = movePacket.PosInfo;
 	
-            Broadcast(resMovePacket);
+            Broadcast(player.CellPos, resMovePacket);
         }
 
         public void HandleSkill(Player player, C_Skill skillPacket)
@@ -57,7 +57,7 @@ namespace Server.Game
             S_Skill skill = new S_Skill() {Info = new SkillInfo()};
             skill.ObjectId = info.ObjectId;
             skill.Info.SkillId = skillPacket.Info.SkillId;
-            Broadcast(skill);
+            Broadcast(player.CellPos, skill);
 
             Skill skillData = null;
             if(DataManager.SkillDict.TryGetValue(skillPacket.Info.SkillId, out skillData) == false)
@@ -89,7 +89,7 @@ namespace Server.Game
                     arrow.PosInfo.PoxY = player.PosInfo.PoxY;
                     arrow.Speed = skillData.projectile.speed;
                     
-                    JobQ.Push(EnterGame, arrow);
+                    JobQ.Push(EnterGame, arrow, false);
                     break;
             }
         }

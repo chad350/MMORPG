@@ -108,8 +108,8 @@ class PacketHandler
 		
 		// 시스템에 따라 얻을수 있는 유니크 키
 		// 나중에 같은 기기에서 여러 계정을 사용하면 문제가 될 수 있다.
-		loginPacket.UniqueId = SystemInfo.deviceUniqueIdentifier;
-		
+		string path = Application.dataPath;
+		loginPacket.UniqueId = path.GetHashCode().ToString();
 		Managers.Network.Send(loginPacket);
 	}
 	
@@ -186,8 +186,8 @@ class PacketHandler
 		
 		// UI 에서 표시
 		UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-		UI_Inventory invenUI = gameSceneUI.InvenUI;
-		invenUI.RefreshUI();
+		gameSceneUI.InvenUI.RefreshUI();
+		gameSceneUI.StatUI.RefreshUI();
 		
 		if(Managers.Obj.MyPlayer != null)
 			Managers.Obj.MyPlayer.RefreshAdditionalStat();
@@ -207,8 +207,8 @@ class PacketHandler
 		
 		// UI 에서 표시
 		UI_GameScene gameSceneUI = Managers.UI.SceneUI as UI_GameScene;
-		UI_Inventory invenUI = gameSceneUI.InvenUI;
-		invenUI.RefreshUI();
+		gameSceneUI.InvenUI.RefreshUI();
+		gameSceneUI.StatUI.RefreshUI();
 		
 		if(Managers.Obj.MyPlayer != null)
 			Managers.Obj.MyPlayer.RefreshAdditionalStat();
@@ -217,6 +217,13 @@ class PacketHandler
 	public static void S_ChangeStatHandler(PacketSession session, IMessage packet)
 	{
 		S_ChangeStat changeStatePacket = packet as S_ChangeStat;
+	}
+	
+	public static void S_PingHandler(PacketSession session, IMessage packet)
+	{
+		C_Pong pingPacket = new C_Pong();
+		Debug.Log("[server] ping pong~");
+		Managers.Network.Send(pingPacket);
 	}
 }
 

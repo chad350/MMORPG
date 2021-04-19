@@ -10,6 +10,8 @@ namespace Server.Game
     {
         public int PlayerDbId { get; set; }
         public ClientSession Session { get; set; }
+        public VisionCube Vision { get; private set; }
+
         public Inventory Inven { get; private set; } = new Inventory();
 
         public int WeaponDamage { get; private set; }
@@ -21,6 +23,7 @@ namespace Server.Game
         public Player()
         {
             ObjectType = GameObjectType.Player;
+            Vision = new VisionCube(this);
         }
 
         public override void OnDamaged(GameObject attacker, int damage)
@@ -89,7 +92,7 @@ namespace Server.Game
                 {
                     // 방어구이며 장착중이고 부위가 일치하는 아이템 - ex) Armor, Helmet
                     ArmorType armorType = ((Armor) item).ArmorType;
-                    unequipItem = Inven.Find(i => i.Equipped && i.ItemType == ItemType.Armor && ((Armor) item).ArmorType == armorType);
+                    unequipItem = Inven.Find(i => i.Equipped && i.ItemType == ItemType.Armor && ((Armor) i).ArmorType == armorType);
                 }
 
                 if (unequipItem != null)

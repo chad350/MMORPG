@@ -34,7 +34,6 @@ namespace Server.DB
                     if(success)
                     {
                         // Me (GameRoom)
-                        room.JobQ.Push(() => Console.WriteLine($"Hp Saved : {playerDb.Hp}"));
                     }
                 }
             });
@@ -77,7 +76,6 @@ namespace Server.DB
         public static void SavePlayerStatus_Step3(int hp)
         {
             // Me (GameRoom)
-            Console.WriteLine($"Hp Saved : {hp}");
         }
         #endregion
 

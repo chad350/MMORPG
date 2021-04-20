@@ -7,7 +7,7 @@ namespace AccountServer.DB
     {
         public DbSet<AccountDb> Accounts { get; set; }
 
-        public AppDbContext(DbContextOptions options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
         

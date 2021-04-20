@@ -6,12 +6,15 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Google.Protobuf;
 using Google.Protobuf.Protocol;
 using Server.Data;
 using Server.DB;
 using Server.Game;
+using Server.Utils;
 using ServerCore;
+using SharedDB;
 using Timer = System.Timers.Timer;
 
 namespace Server
@@ -86,6 +89,44 @@ namespace Server
 			}
 		}
 
+		static void StartServerInfoTask()
+		{
+			var t = new System.Timers.Timer();
+			t.AutoReset = true;
+			t.Elapsed += new ElapsedEventHandler((s, e) =>
+			{
+				using (SharedDbContext shared = new SharedDbContext())
+				{
+					ServerDb serverDb = shared.Servers.Where(s => s.Name == Name).FirstOrDefault();
+					if (serverDb != null)
+					{
+						serverDb.IpAddress = IpAddress;
+						serverDb.Port = Port;
+						serverDb.BusyScore = SessionManager.Instance.GetBusyScore();
+						shared.SaveChangesEx();
+					}
+					else
+					{
+						serverDb = new ServerDb()
+						{
+							Name = Program.Name,
+							IpAddress = Program.IpAddress,
+							Port = Program.Port,
+							BusyScore = SessionManager.Instance.GetBusyScore()
+						};
+						shared.Servers.Add(serverDb);
+						shared.SaveChangesEx();
+					}
+				}
+			});
+			t.Interval = 10 * 1000;
+			t.Start();
+		}
+
+		public static string Name { get; } = "302";
+		public static int Port { get; } = 7777;
+		public static string IpAddress { set; get; }
+
 		static void Main(string[] args)
 		{
 			ConfigManager.LoadConfig();
@@ -96,11 +137,16 @@ namespace Server
 			// DNS (Domain Name System)
 			string host = Dns.GetHostName();
 			IPHostEntry ipHost = Dns.GetHostEntry(host);
-			IPAddress ipAddr = ipHost.AddressList[0];
-			IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+			IPAddress ipAddr = ipHost.AddressList[1];
+			IPEndPoint endPoint = new IPEndPoint(ipAddr, Port);
 
+			IpAddress = ipAddr.ToString();
+			
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
+
+			// ServerInfo Task
+			StartServerInfoTask();
 			
 			// DbTask
 			{

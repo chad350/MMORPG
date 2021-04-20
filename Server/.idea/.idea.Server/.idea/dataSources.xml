@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Microsoft SQL Server (jTds)" uuid="27863d22-257c-47b2-b9cb-170e06a1b38d">
+    <data-source source="LOCAL" name="Microsoft SQL Server (jTds) -" uuid="aec34dc1-dc3c-49db-ab8e-0b204c007ce2">
       <driver-ref>sqlserver.jtds</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>net.sourceforge.jtds.jdbc.Driver</jdbc-driver>
